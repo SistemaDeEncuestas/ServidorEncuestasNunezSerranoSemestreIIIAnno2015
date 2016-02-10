@@ -51,12 +51,13 @@ public class NombresDeArchivosData {
 //     * </nombreArchivos>
 //     **/
     
-    public void insertarNombre(String nombreArchivo){
+    public void insertarNombre(String nombreArchivo) throws IOException{
         
         Element elemNombre = new Element("nombre");
         elemNombre.addContent(nombreArchivo);
         
         this.raiz.addContent(elemNombre);
+        guardarXML();
     }
     
     public List<String> getNombres(){
@@ -66,12 +67,22 @@ public class NombresDeArchivosData {
 
         for (Object objetoActual : listaElementos) {
             Element elementoActual = (Element) objetoActual;
-            
-            listaNombres.add(elementoActual.getChild("nombre").getValue());
+            listaNombres.add(elementoActual.getValue());
         }
         
         return listaNombres;
     }
     
-    
+    public boolean existeArchivo(String nombreArchivo){
+        
+        List<String> lista = getNombres();
+        
+        for(String elem : lista){
+            if (elem.equals(nombreArchivo)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 }

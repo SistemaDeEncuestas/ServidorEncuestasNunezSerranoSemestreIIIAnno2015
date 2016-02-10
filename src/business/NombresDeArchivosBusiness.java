@@ -23,11 +23,18 @@ public class NombresDeArchivosBusiness {
     }
     
     public void insertarNombre(String nombreArchivo){
-        this.nombresDeArchivosData.insertarNombre(nombreArchivo);
+        try {
+            this.nombresDeArchivosData.insertarNombre(nombreArchivo);
+        } catch (IOException ex) {
+            Logger.getLogger(NombresDeArchivosBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public List<String> getNombres(){
         return this.nombresDeArchivosData.getNombres();
     }
     
+    public boolean existeArchivo(String nombreArchivo){
+        return this.nombresDeArchivosData.existeArchivo(nombreArchivo);
+    }
 }

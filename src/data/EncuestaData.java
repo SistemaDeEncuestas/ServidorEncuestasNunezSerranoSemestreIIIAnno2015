@@ -29,9 +29,11 @@ public class EncuestaData {
     private Document documento;
     private Element raiz;
     private String rutaArchivo;
+    private String rutaAux;
 
     public EncuestaData(String rutaArchivo) throws JDOMException, IOException {
-        this.rutaArchivo = rutaArchivo+".xml";
+        this.rutaAux = rutaArchivo;
+        this.rutaArchivo = "src/files/"+rutaArchivo+".xml";
         File archivo = new File(this.rutaArchivo);
         this.nombresDeArchivosBusiness = new NombresDeArchivosBusiness();
         
@@ -53,8 +55,12 @@ public class EncuestaData {
         xmlOutputter.output(this.documento, new PrintWriter(this.rutaArchivo));
     }
     
-    public void insertar(Encuesta encuesta) throws IOException {
+    public boolean insertar(Encuesta encuesta) throws IOException {
 
+        if (this.nombresDeArchivosBusiness.existeArchivo(this.rutaAux)) {//ya existe
+            return false;
+        }
+        
         Element elemCreador = new Element("creador");
         elemCreador.addContent(encuesta.getCreador());
         
@@ -92,7 +98,8 @@ public class EncuestaData {
         this.raiz.addContent(elemPreguntas);
         guardarXML();
         
-        this.nombresDeArchivosBusiness.insertarNombre(this.rutaArchivo);
+        this.nombresDeArchivosBusiness.insertarNombre(this.rutaAux);
+        return true;//insertado con exito
     }
 
     public List<Encuesta> getTodasLasEncuestas() throws IOException, JDOMException {
@@ -107,7 +114,7 @@ public class EncuestaData {
         return listaEncuestas;
     }
     
-    private Encuesta getEncuesta(String nombreEncuesta) throws JDOMException, IOException{
+    public Encuesta getEncuesta(String nombreEncuesta) throws JDOMException, IOException{
         
         GetEncuestaPorArchivoBusiness getEncuestaPorArchivoBusiness = new GetEncuestaPorArchivoBusiness(nombreEncuesta);
         
