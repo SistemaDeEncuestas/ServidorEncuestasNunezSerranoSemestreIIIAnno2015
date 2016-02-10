@@ -55,16 +55,16 @@ public class GetEncuestaPorArchivoData {
     public Encuesta getEncuesta(){
         
         List<Pregunta> listaPreguntas = new ArrayList<>();
-        List<String> listaRespuestas = new ArrayList<>();
         
         Element elemCreador = this.raiz.getChild("creador");
         Element elemTitulo = this.raiz.getChild("titulo");
         Element elemDescripcion = this.raiz.getChild("descripcion");
         Element elemPreguntas = this.raiz.getChild("preguntas");
         
-        List listaElementosPreguntas = elemPreguntas.getChildren();
+        List lista = elemPreguntas.getChildren();
         
-        for (Object objetoActualPreguntas : listaElementosPreguntas) {
+        for (Object objetoActualPreguntas : lista) {
+            List<String> listaRespuestas = new ArrayList<>();
             Element elementoActualPreguntas = (Element) objetoActualPreguntas;
             
             Pregunta pregunta;

@@ -116,7 +116,9 @@ public class EncuestaData {
     
     public Encuesta getEncuesta(String nombreEncuesta) throws JDOMException, IOException{
         
-        GetEncuestaPorArchivoBusiness getEncuestaPorArchivoBusiness = new GetEncuestaPorArchivoBusiness(nombreEncuesta);
+        String aux = "src/files/"+nombreEncuesta+".xml";
+        
+        GetEncuestaPorArchivoBusiness getEncuestaPorArchivoBusiness = new GetEncuestaPorArchivoBusiness(aux);
         
         Encuesta encuesta = getEncuestaPorArchivoBusiness.getEncuesta();
         
