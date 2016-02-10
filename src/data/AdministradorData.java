@@ -2,6 +2,7 @@ package data;
 
 import domain.Administrador;
 import domain.Encuesta;
+import domain.Pregunta;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -61,46 +62,75 @@ public class AdministradorData {
         eAdministrador.addContent(eCorreo);
 
         List<Encuesta> listaObjetos = administrador.getEncuestasCreadas();
-        
+//        List<Encuesta> listaObjetos = new ArrayList<>();
+//        List<Pregunta> listaPreguntas = new ArrayList<Pregunta>();
+//        listaPreguntas.add(new Pregunta("Pregunta de PEPE", "ES UNA ENCUESTA DE PEPE,CARAJO!"));
+//        listaObjetos.add(new Encuesta("pepe", "encuestaDePepe", "Es una encuesta de Pepe", listaPreguntas));
+
+        Element eEncuestas = new Element("encuestas");
+
         for (int i = 0; i < listaObjetos.size(); i++) {
-            
-            Element eEncuesta = new Element("Encuesta" + i);
-            
+
+            Element eEncuesta = new Element("encuesta" + i);
+
             Element eTitulo = new Element("titulo");
             eTitulo.addContent(listaObjetos.get(i).getTitulo());
-            
+
             eEncuesta.addContent(eTitulo);
-            
-            eAdministrador.addContent(eEncuesta);
+
+            eEncuestas.addContent(eEncuesta);
 
         }
+        eAdministrador.addContent(eEncuestas);
+        Element ePrimeraVez = new Element("primeraVez");
+        String tipo = String.valueOf(administrador.isPrimeraVez());
+        ePrimeraVez.addContent(tipo);
+        eAdministrador.addContent(ePrimeraVez);
+
         this.raiz.addContent(eAdministrador);
         guardarXML();
 
     }
-    
-     public Administrador[] getAdministradores() {
+
+    public Administrador[] getAdministradores() {
 
         int cantidadProyectos = this.raiz.getContentSize();
         Administrador[] administradores = new Administrador[cantidadProyectos];
-
         int contador = 0;
 
-        List listaElementosProyecto = this.raiz.getChildren();
+        List listaElementosAdmins = this.raiz.getChildren();
 
-        for (Object objetoActual : listaElementosProyecto) {
-            
-            List<Encuesta> lista = new ArrayList<>();
+        for (Object objetoActual : listaElementosAdmins) {
+
+            List<Encuesta> listaEncuestasCreadas = new ArrayList<>();
+            List<String> listaNombres = new ArrayList<>();
+
             Element elementoActual = (Element) objetoActual;
 
-            List listaComponentes = elementoActual.getChildren();
+            List listaEncuestas = elementoActual.getChild("encuestas").getContent();
 
-            //TODO recuperar las encuestas    
-            
+            for (Object objetoEncuesta : listaEncuestas) {
+
+                Element encuestaActual = (Element) objetoEncuesta;
+                String compActual = encuestaActual.getText();
+
+                listaNombres.add(compActual);
+            }
+
+            //TODO recuperar encuestas a partir del nombre
             Administrador adminActual = new Administrador(elementoActual.getChild("nombre").getValue(),
                     elementoActual.getAttributeValue("nickname"),
                     elementoActual.getChild("contrasenna").getValue(),
                     elementoActual.getChild("correo").getValue());
+
+            adminActual.setEncuestasCreadas(listaEncuestasCreadas);
+
+            String primeraVez = (elementoActual.getChild("primeraVez").getValue());
+            if (primeraVez.equals("true")) {
+                adminActual.setPrimeraVez(true);
+            } else {
+                adminActual.setPrimeraVez(false);
+            }
 
             administradores[contador++] = adminActual;
         }
@@ -108,7 +138,35 @@ public class AdministradorData {
         return administradores;
 
     }
-    
-    
 
+    public Administrador getAdministrador(String nickname) {
+
+        Administrador[] admins = getAdministradores();
+
+        for (int i = 0; i < admins.length; i++) {
+            if (admins[i].getNombreUsuario().equals(nickname)) {
+
+                return admins[i];
+            }
+
+        }
+        return null;
+    }
+    public boolean eliminaAdministrador(String nickname) throws FileNotFoundException, IOException{
+        
+        List listaElementos = this.raiz.getChildren();
+        for(Object objetoActual: listaElementos){
+            
+            Element elementoActual = (Element)objetoActual;
+            
+            if(elementoActual.getAttributeValue("nickname").equals(nickname)){
+                this.raiz.removeContent(elementoActual);
+                elementoActual.removeContent();
+                XMLOutputter xmlOutputter = new XMLOutputter();
+                xmlOutputter.output(documento, new PrintWriter(rutaArchivo));
+                return true;
+            }
+        }
+        return false;
+    }
 }
