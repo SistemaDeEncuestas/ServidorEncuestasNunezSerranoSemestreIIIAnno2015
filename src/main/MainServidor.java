@@ -8,7 +8,10 @@ import gui.ServidorInterfaz;
 public class MainServidor {
 
     public static void main(String[] args){
-        ServidorInterfaz servidorInterfaz = new ServidorInterfaz();
+        
+        int puerto = 5700;
+        
+        ServidorInterfaz servidorInterfaz = new ServidorInterfaz(puerto);
         servidorInterfaz.setVisible(true);
     }
     

@@ -28,6 +28,7 @@ public class Servidor implements Runnable{
     
     @Override
     public void run(){
+        
         try {
             ServerSocket serverSocket= new ServerSocket(this.puerto);
             System.out.println("Iniciado");
@@ -39,16 +40,13 @@ public class Servidor implements Runnable{
                 System.out.println("El cliente me envio: "+recibir.readLine());
                 enviar.println("Listo");
                 
-                String estudianteString = recibir.readLine();
+//                String estudianteString = recibir.readLine();
+//                System.out.println(estudianteString);
                 
-                System.out.println(estudianteString);
-                SAXBuilder saxBuilder = new SAXBuilder();
-                
-                StringReader stringReader= new StringReader(estudianteString);
-                Document doc= saxBuilder.build(stringReader);
-                Element rootEstudiante= doc.getRootElement();
-                
-                
+//                SAXBuilder saxBuilder = new SAXBuilder();
+//                StringReader stringReader= new StringReader(estudianteString);
+//                Document doc= saxBuilder.build(stringReader);
+//                Element rootEstudiante= doc.getRootElement();
 ////                EstudianteXMLBusiness eXMLB= new EstudianteXMLBusiness();
 ////                eXMLB.insertarEstaudiante(new Estudiante(rootEstudiante.getAttributeValue("cedula"), rootEstudiante.getChildText("nombre"), Integer.parseInt(rootEstudiante.getChildText("edad"))));
                 
@@ -56,7 +54,7 @@ public class Servidor implements Runnable{
             
             }while(true);
             
-        } catch (IOException | JDOMException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }   
