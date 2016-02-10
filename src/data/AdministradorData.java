@@ -1,5 +1,7 @@
 package data;
 
+import business.EncuestaBusiness;
+import business.NombresDeArchivosBusiness;
 import domain.Administrador;
 import domain.Encuesta;
 import domain.Pregunta;
@@ -103,21 +105,33 @@ public class AdministradorData {
         for (Object objetoActual : listaElementosAdmins) {
 
             List<Encuesta> listaEncuestasCreadas = new ArrayList<>();
-            List<String> listaNombres = new ArrayList<>();
+//            List<String> listaNombres = new ArrayList<>();
 
             Element elementoActual = (Element) objetoActual;
 
-            List listaEncuestas = elementoActual.getChild("encuestas").getContent();
+            List listaNombresEncuestasXML = elementoActual.getChild("encuestas").getContent();
 
-            for (Object objetoEncuesta : listaEncuestas) {
-
-                Element encuestaActual = (Element) objetoEncuesta;
-                String compActual = encuestaActual.getText();
-
-                listaNombres.add(compActual);
+//            for (Object objetoEncuesta : listaNombresEncuestasXML) {
+//
+//                Element encuestaActual = (Element) objetoEncuesta;
+//                String compActual = encuestaActual.getText();
+//
+//                listaNombres.add(compActual);
+//            }
+            
+            NombresDeArchivosBusiness nombreBusiness = new NombresDeArchivosBusiness();
+            List<String> listaNombresEncuestas = nombreBusiness.getNombres();
+            
+            
+           
+            for (int i = 0; i < listaNombresEncuestas.size(); i++) {
+                 EncuestaBusiness encuestaBusiness = new EncuestaBusiness(listaNombresEncuestas.get(i));
+                 Encuesta encuestaTemporal = encuestaBusiness.getEncuesta(listaNombresEncuestas.get(i));
+                if(encuestaTemporal.getCreador().equals(elementoActual.getAttributeValue("nickname"))){
+                    listaEncuestasCreadas.add(encuestaTemporal);
+                }
             }
-
-            //TODO recuperar encuestas a partir del nombre
+            
             Administrador adminActual = new Administrador(elementoActual.getChild("nombre").getValue(),
                     elementoActual.getAttributeValue("nickname"),
                     elementoActual.getChild("contrasenna").getValue(),
