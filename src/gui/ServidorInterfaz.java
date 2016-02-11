@@ -2,19 +2,10 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,7 +23,7 @@ import logic.Servidor;
 /**
  * @author adriansb3105
  */
-public class ServidorInterfaz extends JFrame implements ActionListener, Runnable {
+public class ServidorInterfaz extends JFrame implements ActionListener{
 
     private JPanel panelGrande;
     private JPanel panelUsuarios;
@@ -42,7 +33,6 @@ public class ServidorInterfaz extends JFrame implements ActionListener, Runnable
     private JMenu jmSalir;
     private JMenuItem jmiSalir;
     private JMenuItem jmiIniciar;
-    private JMenuItem jmiDetener;
     private JLabel jlEstado;
     private JTextArea jtaConsola;
     private JScrollPane scroll;
@@ -52,8 +42,7 @@ public class ServidorInterfaz extends JFrame implements ActionListener, Runnable
     private Font fuente;
     private int puerto;
     private Thread hilo;
-    private boolean flag;
-    int num;
+    private Servidor servidor;
 
     public ServidorInterfaz(int puerto) {
         super("Servidor");
@@ -67,7 +56,6 @@ public class ServidorInterfaz extends JFrame implements ActionListener, Runnable
 
     private void init(int puerto) {
 
-        this.flag = true;
         this.puerto = puerto;
         this.panelGrande = new JPanel();
         this.panelGrande.setLayout(new BorderLayout());
@@ -80,11 +68,8 @@ public class ServidorInterfaz extends JFrame implements ActionListener, Runnable
         this.jmInicio = new JMenu("Inicio");
         this.jmSalir = new JMenu("Salir");
         this.jmiIniciar = new JMenuItem("Iniciar Servidor");
-        this.jmiDetener = new JMenuItem("Detener Servidor");
         this.jmiSalir = new JMenuItem("Salir");
         this.jtaConsola = new JTextArea();
-        this.jmiDetener.setEnabled(false);
-        this.hilo = new Thread(this);
 
         String[] admins = {"Administradores", "admi 1", "admi 2", "admi 3", "admi 4"};
         String[] encuestas = {"Encuestas Creadas", "encuesta 1", "encuesta 2", "encuesta 3", "encuesta 4"};
@@ -101,13 +86,11 @@ public class ServidorInterfaz extends JFrame implements ActionListener, Runnable
         this.jtaConsola.setEditable(false);
 
         this.jmInicio.add(this.jmiIniciar);
-        this.jmInicio.add(this.jmiDetener);
         this.jmSalir.add(this.jmiSalir);
         this.jmbBarraMenu.add(this.jmInicio);
         this.jmbBarraMenu.add(this.jmSalir);
 
         this.jmiIniciar.addActionListener(this);
-        this.jmiDetener.addActionListener(this);
         this.jmiSalir.addActionListener(this);
 
         this.jtaConsola.setBackground(new Color(80, 80, 80));
@@ -140,26 +123,15 @@ public class ServidorInterfaz extends JFrame implements ActionListener, Runnable
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == this.jmiIniciar) {
-            this.jmiIniciar.setEnabled(false);
-            this.jmiDetener.setEnabled(true);
+        if (e.getSource() == this.jmiIniciar) 
+            this.jmiIniciar.setEnabled(false);{
+            this.servidor = new Servidor(this.puerto);
+            servidor.correHilo(this.jlEstado, this.jtaConsola);
             
-            
-            
-            this.hilo.start();
+            this.hilo = new Thread(servidor);
+            hilo.start();
         }
-
-        if (e.getSource() == this.jmiDetener) {
-            this.hilo.stop();
-            this.flag = false;
-            
-            this.jlEstado.setText("Estado: Detenido");
-            this.jtaConsola.append("Servidor detenido\n");
-            
-            this.jmiDetener.setEnabled(false);
-            this.jmiIniciar.setEnabled(true);
-        }
-
+        
         if (e.getSource() == this.jmiSalir) {
             int opcion = JOptionPane.showConfirmDialog(null, "¿Confirma que desea cerrar el servidor?");
 
@@ -168,28 +140,4 @@ public class ServidorInterfaz extends JFrame implements ActionListener, Runnable
             }
         }
     }
-
-    @Override
-    public void run() {
-        try {
-            ServerSocket serverSocket = new ServerSocket(this.puerto);
-
-            this.jlEstado.setText("Estado: Iniciado");
-            this.jtaConsola.append("Servidor iniciado\n");
-            do {
-                Socket socket = serverSocket.accept();
-                PrintStream enviar = new PrintStream(socket.getOutputStream());
-                BufferedReader recibir = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                enviar.println("Este es el sevidor(Adrian)");
-                System.out.println("El cliente me envio: " + recibir.readLine());
-                enviar.println("Listo");
-                socket.close();
-
-            } while (this.flag);
-            System.out.println("termino");
-        } catch (IOException ex) {
-            Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
 }

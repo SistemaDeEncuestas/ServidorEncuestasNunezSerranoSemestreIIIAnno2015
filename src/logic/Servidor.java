@@ -4,15 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.io.StringReader;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -20,42 +19,53 @@ import org.jdom.input.SAXBuilder;
  */
 public class Servidor implements Runnable{
     private int puerto;
+    private JLabel jlEstado;
+    private JTextArea jtaConsola;
+    private boolean flag;
 
     public Servidor(int puerto) {
         super();
         this.puerto= puerto;
+        this.flag = true;
+    }
+    
+    public void correHilo(JLabel jlEstado, JTextArea jtaConsola){
+        this.jlEstado = jlEstado;
+        this.jtaConsola = jtaConsola;
     }
     
     @Override
     public void run(){
         
         try {
-            ServerSocket serverSocket= new ServerSocket(this.puerto);
-            System.out.println("Iniciado");
-            do{
-                Socket socket= serverSocket.accept();
-                PrintStream enviar= new PrintStream(socket.getOutputStream());
+            Socket socket;
+            ServerSocket serverSocket = new ServerSocket(this.puerto);
+
+            this.jlEstado.setText("Estado: Iniciado");
+            this.jtaConsola.append("Servidor iniciado\n");
+            do {
+                socket = serverSocket.accept();
+                PrintStream enviar = new PrintStream(socket.getOutputStream());
                 BufferedReader recibir = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                enviar.println("Este es el sevidor(Adrian)");
-                System.out.println("El cliente me envio: "+recibir.readLine());
-                enviar.println("Listo");
                 
-//                String estudianteString = recibir.readLine();
-//                System.out.println(estudianteString);
+                Scanner s = new Scanner(System.in);
+                String b = s.nextLine();
                 
-//                SAXBuilder saxBuilder = new SAXBuilder();
-//                StringReader stringReader= new StringReader(estudianteString);
-//                Document doc= saxBuilder.build(stringReader);
-//                Element rootEstudiante= doc.getRootElement();
-////                EstudianteXMLBusiness eXMLB= new EstudianteXMLBusiness();
-////                eXMLB.insertarEstaudiante(new Estudiante(rootEstudiante.getAttributeValue("cedula"), rootEstudiante.getChildText("nombre"), Integer.parseInt(rootEstudiante.getChildText("edad"))));
+                jtaConsola.append("Yo: "+b+"\n");
                 
-               socket.close();
+                enviar.println(b);
+                this.jtaConsola.append("Daniel dice: "+recibir.readLine()+"\n");
+                
+                socket.close(); 
+                
+            } while (this.flag);
             
-            }while(true);
             
+        }catch(BindException e){
         } catch (IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
+       
+        
     }   
 }
