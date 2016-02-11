@@ -121,7 +121,7 @@ public class UsuarioData {
 
             for (int i = 0; i < listaNombresEncuestas.size(); i++) {
                 EncuestaBusiness encuestaBusiness = new EncuestaBusiness(listaNombresEncuestas.get(i));
-                Encuesta encuestaTemporal = encuestaBusiness.getEncuesta(listaNombresEncuestas.get(i));
+                Encuesta encuestaTemporal = encuestaBusiness.getEncuesta();
                 if (encuestaTemporal.getTitulo().equals(listaNombres.get(i))) {
                     listaEncuestasRecibidas.add(encuestaTemporal);
                 }

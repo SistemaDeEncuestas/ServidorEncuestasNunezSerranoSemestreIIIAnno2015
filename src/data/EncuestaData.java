@@ -1,6 +1,6 @@
     /*  Hacer crud
-        editar
-    */
+ editar
+ */
 package data;
 
 import business.GetEncuestaPorArchivoBusiness;
@@ -35,16 +35,18 @@ public class EncuestaData {
 
     /**
      * Este constructor es para los metodos de escritura como insertar y borrar
+     *
      * @param rutaArchivo Recibe el nombre de la encuesta
      * @throws JDOMException
      * @throws IOException
-     **/
+     *
+     */
     public EncuestaData(String rutaArchivo) throws JDOMException, IOException {
         this.nombreArchivo = rutaArchivo;
-        this.rutaArchivo = "src/files/"+rutaArchivo+".xml";
+        this.rutaArchivo = "src/files/" + rutaArchivo + ".xml";
         File archivo = new File(this.rutaArchivo);
         this.nombresDeArchivosBusiness = new NombresDeArchivosBusiness();
-        
+
         if (archivo.exists()) {
             SAXBuilder saxBuilder = new SAXBuilder();
             saxBuilder.setIgnoringElementContentWhitespace(true);
@@ -60,33 +62,33 @@ public class EncuestaData {
 
     /**
      * Este constructor es solo para los metodos de lectura como los get
-     **/
+     *
+     */
     public EncuestaData() {
     }
 
-    
     public void guardarXML() throws FileNotFoundException, IOException {
         XMLOutputter xmlOutputter = new XMLOutputter();
         xmlOutputter.output(this.documento, new PrintWriter(this.rutaArchivo));
     }
-    
+
     public boolean insertar(Encuesta encuesta) throws IOException {
 
         if (this.nombresDeArchivosBusiness.existeArchivo(this.nombreArchivo)) {//ya existe
             return false;
         }
-        
+
         Element elemCreador = new Element("creador");
         elemCreador.addContent(encuesta.getCreador());
-        
+
         Element elemTitulo = new Element("titulo");
         elemTitulo.addContent(encuesta.getTitulo());
-        
+
         Element elemDescripcion = new Element("descripcion");
         elemDescripcion.addContent(encuesta.getDescripcion());
-        
+
         Element elemPreguntas = new Element("preguntas");
-        
+
         List<Pregunta> listaPreguntas = encuesta.getPreguntas();
 
         for (int i = 0; i < listaPreguntas.size(); i++) {
@@ -94,25 +96,24 @@ public class EncuestaData {
             Element elemPregunta = new Element("pregunta");
             elemPregunta.setAttribute("tipo", listaPreguntas.get(i).getTipo());
             elemPregunta.setAttribute("enunciado", listaPreguntas.get(i).getEnunciado());
-            
-            
+
             List<String> listaRespuestas = encuesta.getPreguntas().get(i).getListaRespuestas();
-            
+
             for (String respuesta : listaRespuestas) {
                 Element elemRespuesta = new Element("respuesta");
                 elemRespuesta.addContent(respuesta);
                 elemPregunta.addContent(elemRespuesta);
             }
-            
+
             elemPreguntas.addContent(elemPregunta);
         }
-        
+
         this.raiz.addContent(elemCreador);
         this.raiz.addContent(elemTitulo);
         this.raiz.addContent(elemDescripcion);
         this.raiz.addContent(elemPreguntas);
         guardarXML();
-        
+
         this.nombresDeArchivosBusiness.insertarNombre(this.nombreArchivo, encuesta.getCreador());
         return true;//insertado con exito
     }
@@ -121,59 +122,65 @@ public class EncuestaData {
 
         List<String> nombresDeArchivos = this.nombresDeArchivosBusiness.getNombres();
         List<Encuesta> listaEncuestas = new ArrayList<>();
-        
+
         for (int i = 0; i < nombresDeArchivos.size(); i++) {
-            listaEncuestas.add(getEncuesta(nombresDeArchivos.get(i)));
+
+            String aux = "src/files/" + nombresDeArchivos.get(i) + ".xml";
+
+            GetEncuestaPorArchivoBusiness getEncuestaPorArchivoBusiness = new GetEncuestaPorArchivoBusiness(aux);
+
+            Encuesta encuesta = getEncuestaPorArchivoBusiness.getEncuesta();
+
+            listaEncuestas.add(encuesta);
         }
 
         return listaEncuestas;
     }
-    
-    public Encuesta getEncuesta(String nombreEncuesta) throws JDOMException, IOException{
-        
-        String aux = "src/files/"+nombreEncuesta+".xml";
-        
+
+    public Encuesta getEncuesta() throws JDOMException, IOException {
+
+        String aux = this.rutaArchivo;
+
         GetEncuestaPorArchivoBusiness getEncuestaPorArchivoBusiness = new GetEncuestaPorArchivoBusiness(aux);
-        
+
         Encuesta encuesta = getEncuestaPorArchivoBusiness.getEncuesta();
-        
+
         return encuesta;
     }
-    
-    public List<Encuesta> getEncuestasPorAdmin(String nickname) throws IOException, JDOMException{
+
+    public List<Encuesta> getEncuestasPorAdmin(String nickname) throws IOException, JDOMException {
         List<Encuesta> listaEncuestas = new ArrayList<>();
-        
+
         List<Encuesta> todasLasEncuestas = getTodasLasEncuestas();
-        
-        for(Encuesta encuesta : todasLasEncuestas){
+
+        for (Encuesta encuesta : todasLasEncuestas) {
             if (encuesta.getCreador().equals(nickname)) {
                 listaEncuestas.add(encuesta);
             }
         }
-        
+
         return listaEncuestas;
     }
-    
-    public boolean borrarEncuesta(){
+
+    public boolean borrarEncuesta() {
         File archivo = new File(this.rutaArchivo);
-        
+
         if (archivo.exists()) {
             archivo.delete();
-        }else{
+        } else {
             return false;
         }
-        
+
         return this.nombresDeArchivosBusiness.borrarNombreArchivo(this.nombreArchivo);
     }
-    
-    public boolean editarEncuesta(Encuesta encuesta) throws IOException{
-        
-        
+
+    public boolean editarEncuesta(Encuesta encuesta) throws IOException {
+
         System.out.println(borrarEncuesta());
-        
+
         System.out.println(insertar(encuesta));
-        
+
         return false;
     }
-    
+
 }

@@ -112,7 +112,7 @@ public class AdministradorData {
 
             for (int i = 0; i < listaNombresEncuestas.size(); i++) {
                 EncuestaBusiness encuestaBusiness = new EncuestaBusiness(listaNombresEncuestas.get(i));
-                Encuesta encuestaTemporal = encuestaBusiness.getEncuesta(listaNombresEncuestas.get(i));
+                Encuesta encuestaTemporal = encuestaBusiness.getEncuesta();
                 if (encuestaTemporal.getCreador().equals(elementoActual.getAttributeValue("nickname"))) {
                     listaEncuestasCreadas.add(encuestaTemporal);
                 }

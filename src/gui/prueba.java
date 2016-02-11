@@ -174,12 +174,12 @@ public class prueba extends javax.swing.JFrame {
 //        e.borrarEncuesta();
 
         EncuestaBusiness e = new EncuestaBusiness("miArchivo2");
-        
-        Encuesta a = e.getEncuesta("miArchivo2");
-        
-        a.setTitulo("Aqui va el titulo");
-        
-        System.out.println(e.editarEncuesta(a));
+        e.borrarEncuesta();
+//        Encuesta a = e.getEncuesta();
+//        
+//        a.setTitulo("Aqui va el titulo");
+//        
+//        System.out.println(e.editarEncuesta(a));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

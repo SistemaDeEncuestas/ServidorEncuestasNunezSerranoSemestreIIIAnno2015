@@ -53,9 +53,9 @@ public class EncuestaBusiness {
         return null;
     }
     
-    public Encuesta getEncuesta(String nombreEncuesta){
+    public Encuesta getEncuesta(){
         try {
-            return this.encuestaData.getEncuesta(nombreEncuesta);
+            return this.encuestaData.getEncuesta();
         } catch (JDOMException | IOException ex) {
             Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
