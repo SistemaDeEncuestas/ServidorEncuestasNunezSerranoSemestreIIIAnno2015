@@ -127,7 +127,7 @@ public class prueba extends javax.swing.JFrame {
 ////            }
 ////        });
 
-//        EncuestaBusiness encuestaBusiness = new EncuestaBusiness("miArchivo2");
+//        EncuestaBusiness encuestaBusiness = new EncuestaBusiness("miArchivo1");
 //        
 //        String r1 = "resp 1 - pregunt";
 //        String r2 = "resp 2 - pregunt";
@@ -158,8 +158,8 @@ public class prueba extends javax.swing.JFrame {
 //        preguntas.add(p6);
 ////        preguntas.add(p7);
 //        
-//        Encuesta encuesta2 = new Encuesta("Adrian", "Encuesta para la prueba titulo 2",
-//                                          "Esta es la descripcion de la encuesta 2", preguntas);
+//        Encuesta encuesta2 = new Encuesta("Adrian", "Encuesta para la prueba titulo 1",
+//                                          "Esta es la descripcion de la encuesta 1", preguntas);
 //        
 //        
 //        
@@ -173,13 +173,13 @@ public class prueba extends javax.swing.JFrame {
 //        EncuestaBusiness e = new EncuestaBusiness("miArchivo2");
 //        e.borrarEncuesta();
 
-        EncuestaBusiness e = new EncuestaBusiness("miArchivo2");
-        e.borrarEncuesta();
-//        Encuesta a = e.getEncuesta();
+        EncuestaBusiness e = new EncuestaBusiness("miArchivo1");
+//        e.borrarEncuesta();
+        Encuesta a = e.getEncuesta();
 //        
-//        a.setTitulo("Aqui va el titulo");
+        a.setTitulo("Aqui va el titulo - hoda");
 //        
-//        System.out.println(e.editarEncuesta(a));
+        System.out.println(e.editarEncuesta(a));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

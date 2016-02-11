@@ -73,9 +73,14 @@ public class EncuestaBusiness {
         return null;
     }
     
-    public void borrarEncuesta(){
-        this.encuestaData.borrarEncuesta();
-    }
+    public boolean borrarEncuesta(){
+        try {
+            return this.encuestaData.borrarEncuesta();
+        } catch (IOException ex) {
+            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+   }
     
     public boolean editarEncuesta(Encuesta encuesta){
         try {

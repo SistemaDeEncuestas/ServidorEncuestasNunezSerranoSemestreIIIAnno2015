@@ -162,25 +162,17 @@ public class EncuestaData {
         return listaEncuestas;
     }
 
-    public boolean borrarEncuesta() {
-        File archivo = new File(this.rutaArchivo);
-
-        if (archivo.exists()) {
-            archivo.delete();
-        } else {
-            return false;
-        }
-
+    public boolean borrarEncuesta() throws IOException {
+        this.raiz.removeContent();
+        
+            guardarXML();
+        
         return this.nombresDeArchivosBusiness.borrarNombreArchivo(this.nombreArchivo);
     }
 
     public boolean editarEncuesta(Encuesta encuesta) throws IOException {
 
-        System.out.println(borrarEncuesta());
-
-        System.out.println(insertar(encuesta));
-
-        return false;
+        return borrarEncuesta() && insertar(encuesta);
     }
 
 }
