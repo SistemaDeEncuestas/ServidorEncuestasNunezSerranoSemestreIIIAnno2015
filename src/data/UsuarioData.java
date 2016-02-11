@@ -1,5 +1,7 @@
 package data;
 
+import business.EncuestaBusiness;
+import business.NombresDeArchivosBusiness;
 import domain.Administrador;
 import domain.Encuesta;
 import domain.Encuestado;
@@ -63,10 +65,6 @@ public class UsuarioData {
         eEncuestado.addContent(eCorreo);
 
         List<Encuesta> listaObjetos = encuestado.getListaEncuestas();
-//        List<Encuesta> listaObjetos = new ArrayList<>();
-//        List<Pregunta> listaPreguntas = new ArrayList<Pregunta>();
-//        listaPreguntas.add(new Pregunta("Pregunta de PEPE", "ES UNA ENCUESTA DE PEPE,CARAJO!"));
-//        listaObjetos.add(new Encuesta("pepe", "encuestaDePepe", "Es una encuesta de Pepe", listaPreguntas));
 
         Element eEncuestas = new Element("encuestas");
 
@@ -83,7 +81,6 @@ public class UsuarioData {
 
         }
         eEncuestado.addContent(eEncuestas);
-       
 
         this.raiz.addContent(eEncuestado);
         guardarXML();
@@ -92,8 +89,8 @@ public class UsuarioData {
 
     public Encuestado[] getEncuestados() {
 
-        int cantidadEncuestas = this.raiz.getContentSize();
-        Encuestado[] encuestados = new Encuestado[cantidadEncuestas];
+        int cantidadEncuestados = this.raiz.getContentSize();
+        Encuestado[] encuestados = new Encuestado[cantidadEncuestados];
         int contador = 0;
 
         List listaElementosEncuestados = this.raiz.getChildren();
@@ -101,29 +98,41 @@ public class UsuarioData {
         for (Object objetoActual : listaElementosEncuestados) {
 
             List<Encuesta> listaEncuestasRecibidas = new ArrayList<>();
-            List<String> listaNombres = new ArrayList<>();
 
             Element elementoActual = (Element) objetoActual;
-
-            List listaEncuestas = elementoActual.getChild("encuestas").getContent();
+            List listaEncuestas = elementoActual.getChild("encuestas").getChildren();
+            List<String> listaNombres = new ArrayList<>();
 
             for (Object objetoEncuesta : listaEncuestas) {
 
                 Element encuestaActual = (Element) objetoEncuesta;
-                String compActual = encuestaActual.getText();
+                String compActual = encuestaActual.getValue();
 
                 listaNombres.add(compActual);
             }
 
-            //TODO recuperar encuestas a partir del nombre
+            for (int i = 0; i < listaNombres.size(); i++) {
+                System.out.println("NOMBRES DE LAS ENCUESTAS: " + listaNombres.get(i));
+
+            }
+
+            NombresDeArchivosBusiness nombreBusiness = new NombresDeArchivosBusiness();
+            List<String> listaNombresEncuestas = nombreBusiness.getNombres();
+
+            for (int i = 0; i < listaNombresEncuestas.size(); i++) {
+                EncuestaBusiness encuestaBusiness = new EncuestaBusiness(listaNombresEncuestas.get(i));
+                Encuesta encuestaTemporal = encuestaBusiness.getEncuesta(listaNombresEncuestas.get(i));
+                if (encuestaTemporal.getTitulo().equals(listaNombres.get(i))) {
+                    listaEncuestasRecibidas.add(encuestaTemporal);
+                }
+            }
+
             Encuestado encuestadoActual = new Encuestado(elementoActual.getChild("nombre").getValue(),
                     elementoActual.getAttributeValue("nickname"),
                     elementoActual.getChild("contrasenna").getValue(),
                     elementoActual.getChild("correo").getValue());
 
             encuestadoActual.setListaEncuestas(listaEncuestasRecibidas);
-
-           
 
             encuestados[contador++] = encuestadoActual;
         }
@@ -145,14 +154,15 @@ public class UsuarioData {
         }
         return null;
     }
-    public boolean eliminaEncuestado(String nickname) throws FileNotFoundException, IOException{
-        
+
+    public boolean eliminaEncuestado(String nickname) throws FileNotFoundException, IOException {
+
         List listaElementos = this.raiz.getChildren();
-        for(Object objetoActual: listaElementos){
-            
-            Element elementoActual = (Element)objetoActual;
-            
-            if(elementoActual.getAttributeValue("nickname").equals(nickname)){
+        for (Object objetoActual : listaElementos) {
+
+            Element elementoActual = (Element) objetoActual;
+
+            if (elementoActual.getAttributeValue("nickname").equals(nickname)) {
                 this.raiz.removeContent(elementoActual);
                 elementoActual.removeContent();
                 XMLOutputter xmlOutputter = new XMLOutputter();

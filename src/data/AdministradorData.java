@@ -64,10 +64,6 @@ public class AdministradorData {
         eAdministrador.addContent(eCorreo);
 
         List<Encuesta> listaObjetos = administrador.getEncuestasCreadas();
-//        List<Encuesta> listaObjetos = new ArrayList<>();
-//        List<Pregunta> listaPreguntas = new ArrayList<Pregunta>();
-//        listaPreguntas.add(new Pregunta("Pregunta de PEPE", "ES UNA ENCUESTA DE PEPE,CARAJO!"));
-//        listaObjetos.add(new Encuesta("pepe", "encuestaDePepe", "Es una encuesta de Pepe", listaPreguntas));
 
         Element eEncuestas = new Element("encuestas");
 
@@ -104,19 +100,13 @@ public class AdministradorData {
         for (Object objetoActual : listaElementosAdmins) {
 
             List<Encuesta> listaEncuestasCreadas = new ArrayList<>();
-//            List<String> listaNombres = new ArrayList<>();
+
 
             Element elementoActual = (Element) objetoActual;
 
             List listaNombresEncuestasXML = elementoActual.getChild("encuestas").getContent();
 
-//            for (Object objetoEncuesta : listaNombresEncuestasXML) {
-//
-//                Element encuestaActual = (Element) objetoEncuesta;
-//                String compActual = encuestaActual.getText();
-//
-//                listaNombres.add(compActual);
-//            }
+
             NombresDeArchivosBusiness nombreBusiness = new NombresDeArchivosBusiness();
             List<String> listaNombresEncuestas = nombreBusiness.getNombres();
 
