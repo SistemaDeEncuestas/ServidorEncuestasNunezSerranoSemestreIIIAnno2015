@@ -15,6 +15,10 @@ public class EncuestaBusiness {
 
     private EncuestaData encuestaData;
 
+    /**
+     * Este constructor es para los metodos de escritura como insertar y borrar
+     * @param nombreArchivo  Recibe el nombre de la encuesta
+     **/
     public EncuestaBusiness(String nombreArchivo) {
         try {
             this.encuestaData = new EncuestaData(nombreArchivo);
@@ -22,6 +26,14 @@ public class EncuestaBusiness {
             Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    /**
+     * Este constructor es solo para los metodos de lectura como los get
+     **/
+    public EncuestaBusiness() {
+        this.encuestaData = new EncuestaData();
+    }
+    
     
     public boolean insertar(Encuesta encuesta){
         try {
@@ -48,5 +60,29 @@ public class EncuestaBusiness {
             Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+    
+    public List<Encuesta> getEncuestasPorAdmin(String nickname){
+        try {
+            return this.encuestaData.getEncuestasPorAdmin(nickname);
+        } catch (IOException ex) {
+            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JDOMException ex) {
+            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public void borrarEncuesta(){
+        this.encuestaData.borrarEncuesta();
+    }
+    
+    public boolean editarEncuesta(Encuesta encuesta){
+        try {
+            return this.encuestaData.editarEncuesta(encuesta);
+        } catch (IOException ex) {
+            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 }

@@ -22,9 +22,9 @@ public class NombresDeArchivosBusiness {
         }
     }
     
-    public void insertarNombre(String nombreArchivo){
+    public void insertarNombre(String nombreArchivo, String creador){
         try {
-            this.nombresDeArchivosData.insertarNombre(nombreArchivo);
+            this.nombresDeArchivosData.insertarNombre(nombreArchivo, creador);
         } catch (IOException ex) {
             Logger.getLogger(NombresDeArchivosBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -36,5 +36,18 @@ public class NombresDeArchivosBusiness {
     
     public boolean existeArchivo(String nombreArchivo){
         return this.nombresDeArchivosData.existeArchivo(nombreArchivo);
+    }
+    
+    public String[] listaNombresArchivos(){
+        return this.nombresDeArchivosData.listaNombresArchivos();
+    }
+    
+    public boolean borrarNombreArchivo(String nombreArchivo){
+        try {
+            return this.nombresDeArchivosData.borrarNombreArchivo(nombreArchivo);
+        } catch (IOException ex) {
+            Logger.getLogger(NombresDeArchivosBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 }

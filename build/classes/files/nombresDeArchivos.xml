@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<nombresArchivos><nombre>miArchivo1</nombre><nombre>miArchivo2</nombre></nombresArchivos>
+<nombresArchivos><nombre creador="Adrian">miArchivo1</nombre><nombre creador="Adrian">miArchivo3</nombre><nombre creador="Adrian">miArchivo4</nombre><nombre creador="Adrian">miArchivo5</nombre><nombre creador="Adrian">miArchivo2</nombre></nombresArchivos>

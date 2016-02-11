@@ -24,7 +24,6 @@ import util.Strings;
  */
 public class GetEncuestaPorArchivoData {
 
-    private NombresDeArchivosBusiness nombresDeArchivosBusiness;
     private Document documento;
     private Element raiz;
     private String rutaArchivo;
@@ -32,7 +31,6 @@ public class GetEncuestaPorArchivoData {
     public GetEncuestaPorArchivoData(String rutaArchivo) throws JDOMException, IOException {
         this.rutaArchivo = rutaArchivo;
         File archivo = new File(this.rutaArchivo);
-        this.nombresDeArchivosBusiness = new NombresDeArchivosBusiness();
         
         if (archivo.exists()) {
             SAXBuilder saxBuilder = new SAXBuilder();
@@ -47,10 +45,10 @@ public class GetEncuestaPorArchivoData {
         }
     }
 
-    public void guardarXML() throws FileNotFoundException, IOException {
-        XMLOutputter xmlOutputter = new XMLOutputter();
-        xmlOutputter.output(this.documento, new PrintWriter(this.rutaArchivo));
-    }
+//    public void guardarXML() throws FileNotFoundException, IOException {
+//        XMLOutputter xmlOutputter = new XMLOutputter();
+//        xmlOutputter.output(this.documento, new PrintWriter(this.rutaArchivo));
+//    }
     
     public Encuesta getEncuesta(){
         

@@ -19,6 +19,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import logic.Servidor;
+import logic.UsuariosConectados;
+import logic.ListasServidor;
 
 /**
  * @author adriansb3105
@@ -43,6 +45,8 @@ public class ServidorInterfaz extends JFrame implements ActionListener{
     private int puerto;
     private Thread hilo;
     private Servidor servidor;
+    private UsuariosConectados usuariosConectados;
+    private ListasServidor listasServidor;
 
     public ServidorInterfaz(int puerto) {
         super("Servidor");
@@ -70,11 +74,6 @@ public class ServidorInterfaz extends JFrame implements ActionListener{
         this.jmiIniciar = new JMenuItem("Iniciar Servidor");
         this.jmiSalir = new JMenuItem("Salir");
         this.jtaConsola = new JTextArea();
-
-        String[] admins = {"Administradores", "admi 1", "admi 2", "admi 3", "admi 4"};
-        String[] encuestas = {"Encuestas Creadas", "encuesta 1", "encuesta 2", "encuesta 3", "encuesta 4"};
-        String[] usuarios = {"Usuarios conectados", "usuario 1", "usuario 2", "usuario 3", "usuario 4", "usuario 5"};
-
         this.listaAdmins = new JList<>();
         this.listaEncuestas = new JList<>();
         this.listaUsuariosConectados = new JList<>();
@@ -115,10 +114,14 @@ public class ServidorInterfaz extends JFrame implements ActionListener{
         this.add(this.jlEstado, BorderLayout.SOUTH);
         this.add(this.jmbBarraMenu, BorderLayout.NORTH);
         this.add(this.panelGrande, BorderLayout.CENTER);
-
-        this.listaAdmins.setListData(admins);
-        this.listaEncuestas.setListData(encuestas);
-        this.listaUsuariosConectados.setListData(usuarios);
+        
+        this.usuariosConectados = new UsuariosConectados(this.listaUsuariosConectados);
+        Thread hiloUsuarios = new Thread(this.usuariosConectados);
+        hiloUsuarios.start();
+        
+        this.listasServidor = new ListasServidor(listaAdmins, listaEncuestas);
+        Thread hiloListas = new Thread(this.listasServidor);
+        hiloListas.start();
     }
 
     @Override
@@ -133,7 +136,7 @@ public class ServidorInterfaz extends JFrame implements ActionListener{
         }
         
         if (e.getSource() == this.jmiSalir) {
-            int opcion = JOptionPane.showConfirmDialog(null, "¿Confirma que desea cerrar el servidor?");
+            int opcion = JOptionPane.showConfirmDialog(null, "¿Confirma que desea cerrar el servidor? se cerrara toda conexion existente");
 
             if (opcion == 0) {
                 System.exit(0);

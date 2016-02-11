@@ -32,7 +32,7 @@ public class Encuestado extends Usuario{
 
     @Override
     public String toString() {
-        return super.toString()+"Encuestado{" + "listaEncuestas=" + listaEncuestas + '}';
+        return "Encuestado{" + "listaEncuestas=" + listaEncuestas + '}';
     }
     
 }

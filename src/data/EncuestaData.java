@@ -1,5 +1,5 @@
     /*  Hacer crud
-        editar, borrar
+        editar
     */
 package data;
 
@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -29,10 +31,16 @@ public class EncuestaData {
     private Document documento;
     private Element raiz;
     private String rutaArchivo;
-    private String rutaAux;
+    private String nombreArchivo;
 
+    /**
+     * Este constructor es para los metodos de escritura como insertar y borrar
+     * @param rutaArchivo Recibe el nombre de la encuesta
+     * @throws JDOMException
+     * @throws IOException
+     **/
     public EncuestaData(String rutaArchivo) throws JDOMException, IOException {
-        this.rutaAux = rutaArchivo;
+        this.nombreArchivo = rutaArchivo;
         this.rutaArchivo = "src/files/"+rutaArchivo+".xml";
         File archivo = new File(this.rutaArchivo);
         this.nombresDeArchivosBusiness = new NombresDeArchivosBusiness();
@@ -50,6 +58,13 @@ public class EncuestaData {
         }
     }
 
+    /**
+     * Este constructor es solo para los metodos de lectura como los get
+     **/
+    public EncuestaData() {
+    }
+
+    
     public void guardarXML() throws FileNotFoundException, IOException {
         XMLOutputter xmlOutputter = new XMLOutputter();
         xmlOutputter.output(this.documento, new PrintWriter(this.rutaArchivo));
@@ -57,7 +72,7 @@ public class EncuestaData {
     
     public boolean insertar(Encuesta encuesta) throws IOException {
 
-        if (this.nombresDeArchivosBusiness.existeArchivo(this.rutaAux)) {//ya existe
+        if (this.nombresDeArchivosBusiness.existeArchivo(this.nombreArchivo)) {//ya existe
             return false;
         }
         
@@ -98,7 +113,7 @@ public class EncuestaData {
         this.raiz.addContent(elemPreguntas);
         guardarXML();
         
-        this.nombresDeArchivosBusiness.insertarNombre(this.rutaAux);
+        this.nombresDeArchivosBusiness.insertarNombre(this.nombreArchivo, encuesta.getCreador());
         return true;//insertado con exito
     }
 
@@ -125,5 +140,40 @@ public class EncuestaData {
         return encuesta;
     }
     
+    public List<Encuesta> getEncuestasPorAdmin(String nickname) throws IOException, JDOMException{
+        List<Encuesta> listaEncuestas = new ArrayList<>();
+        
+        List<Encuesta> todasLasEncuestas = getTodasLasEncuestas();
+        
+        for(Encuesta encuesta : todasLasEncuestas){
+            if (encuesta.getCreador().equals(nickname)) {
+                listaEncuestas.add(encuesta);
+            }
+        }
+        
+        return listaEncuestas;
+    }
+    
+    public boolean borrarEncuesta(){
+        File archivo = new File(this.rutaArchivo);
+        
+        if (archivo.exists()) {
+            archivo.delete();
+        }else{
+            return false;
+        }
+        
+        return this.nombresDeArchivosBusiness.borrarNombreArchivo(this.nombreArchivo);
+    }
+    
+    public boolean editarEncuesta(Encuesta encuesta) throws IOException{
+        
+        
+        System.out.println(borrarEncuesta());
+        
+        System.out.println(insertar(encuesta));
+        
+        return false;
+    }
     
 }

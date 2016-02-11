@@ -17,6 +17,7 @@ import util.Strings;
  * @author adriansb3105
  */
 public class NombresDeArchivosData {
+
     private Document documento;
     private Element raiz;
     private String rutaArchivo;
@@ -42,26 +43,26 @@ public class NombresDeArchivosData {
         XMLOutputter xmlOutputter = new XMLOutputter();
         xmlOutputter.output(this.documento, new PrintWriter(this.rutaArchivo));
     }
-    
+
 //    /**
 //     * <nombreArchivos>
-//     *      <nombre>
+//     *      <nombre creador="Adrian">
 //     *          nombre1
 //     *      </nombre>
 //     * </nombreArchivos>
 //     **/
-    
-    public void insertarNombre(String nombreArchivo) throws IOException{
-        
+    public void insertarNombre(String nombreArchivo, String creador) throws IOException {
+
         Element elemNombre = new Element("nombre");
+        elemNombre.setAttribute("creador", creador);
         elemNombre.addContent(nombreArchivo);
-        
+
         this.raiz.addContent(elemNombre);
         guardarXML();
     }
-    
-    public List<String> getNombres(){
-        
+
+    public List<String> getNombres() {
+
         List<String> listaNombres = new ArrayList<>();
         List listaElementos = this.raiz.getChildren();
 
@@ -69,20 +70,52 @@ public class NombresDeArchivosData {
             Element elementoActual = (Element) objetoActual;
             listaNombres.add(elementoActual.getValue());
         }
-        
+
         return listaNombres;
     }
-    
-    public boolean existeArchivo(String nombreArchivo){
-        
+
+    public boolean existeArchivo(String nombreArchivo) {
+
         List<String> lista = getNombres();
-        
-        for(String elem : lista){
+
+        for (String elem : lista) {
             if (elem.equals(nombreArchivo)) {
                 return true;
             }
         }
-        
+
         return false;
+    }
+
+    public String[] listaNombresArchivos() {
+
+        String[] nombres = new String[getNombres().size() + 1];
+
+        nombres[0] = "Encuestas Creadas";
+
+        for (int i = 0; i < getNombres().size(); i++) {
+            nombres[i + 1] = getNombres().get(i);
+        }
+
+        return nombres;
+
+    }
+    
+    public boolean borrarNombreArchivo(String nombreArchivo) throws IOException{
+        
+        List listaElementos = this.raiz.getChildren();
+        boolean removido = false;
+        
+        for (Object objetoActual : listaElementos) {
+            Element elementoActual = (Element) objetoActual;
+            
+            if (elementoActual.getValue().equals(nombreArchivo)) {
+                removido = this.raiz.removeContent(elementoActual);
+                guardarXML();
+                
+                return removido;
+            }
+        }
+        return removido;
     }
 }

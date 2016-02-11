@@ -28,7 +28,7 @@ public class AdministradorData {
     private String rutaArchivo;
 
     public AdministradorData(String rutaArchivo) throws JDOMException, IOException {
-        this.rutaArchivo = rutaArchivo;
+        this.rutaArchivo = "src/files/" + rutaArchivo + ".xml";
         File archivo = new File(this.rutaArchivo);
 
         if (archivo.exists()) {
@@ -81,7 +81,6 @@ public class AdministradorData {
             eEncuesta.addContent(eTitulo);
 
             eEncuestas.addContent(eEncuesta);
-
         }
         eAdministrador.addContent(eEncuestas);
         Element ePrimeraVez = new Element("primeraVez");
@@ -118,20 +117,17 @@ public class AdministradorData {
 //
 //                listaNombres.add(compActual);
 //            }
-            
             NombresDeArchivosBusiness nombreBusiness = new NombresDeArchivosBusiness();
             List<String> listaNombresEncuestas = nombreBusiness.getNombres();
-            
-            
-           
+
             for (int i = 0; i < listaNombresEncuestas.size(); i++) {
-                 EncuestaBusiness encuestaBusiness = new EncuestaBusiness(listaNombresEncuestas.get(i));
-                 Encuesta encuestaTemporal = encuestaBusiness.getEncuesta(listaNombresEncuestas.get(i));
-                if(encuestaTemporal.getCreador().equals(elementoActual.getAttributeValue("nickname"))){
+                EncuestaBusiness encuestaBusiness = new EncuestaBusiness(listaNombresEncuestas.get(i));
+                Encuesta encuestaTemporal = encuestaBusiness.getEncuesta(listaNombresEncuestas.get(i));
+                if (encuestaTemporal.getCreador().equals(elementoActual.getAttributeValue("nickname"))) {
                     listaEncuestasCreadas.add(encuestaTemporal);
                 }
             }
-            
+
             Administrador adminActual = new Administrador(elementoActual.getChild("nombre").getValue(),
                     elementoActual.getAttributeValue("nickname"),
                     elementoActual.getChild("contrasenna").getValue(),
@@ -166,14 +162,15 @@ public class AdministradorData {
         }
         return null;
     }
-    public boolean eliminaAdministrador(String nickname) throws FileNotFoundException, IOException{
-        
+
+    public boolean eliminaAdministrador(String nickname) throws FileNotFoundException, IOException {
+
         List listaElementos = this.raiz.getChildren();
-        for(Object objetoActual: listaElementos){
-            
-            Element elementoActual = (Element)objetoActual;
-            
-            if(elementoActual.getAttributeValue("nickname").equals(nickname)){
+        for (Object objetoActual : listaElementos) {
+
+            Element elementoActual = (Element) objetoActual;
+
+            if (elementoActual.getAttributeValue("nickname").equals(nickname)) {
                 this.raiz.removeContent(elementoActual);
                 elementoActual.removeContent();
                 XMLOutputter xmlOutputter = new XMLOutputter();
@@ -182,5 +179,30 @@ public class AdministradorData {
             }
         }
         return false;
+    }
+
+    public String[] getNombresAdministradores() {
+        List<String> nombresUnicos = new ArrayList<>();
+
+        for (int i = 0; i < getAdministradores().length; i++) {
+
+            if (nombresUnicos.isEmpty()) {
+                nombresUnicos.add(getAdministradores()[i].getNombreUsuario());
+            } else {
+                if (!nombresUnicos.contains(getAdministradores()[i].getNombreUsuario())) {
+                    nombresUnicos.add(getAdministradores()[i].getNombreUsuario());
+                }
+            }
+        }
+
+        String[] nombres = new String[nombresUnicos.size()+1];
+
+        nombres[0] = "Administradores";
+        
+        for (int j = 0; j < nombresUnicos.size(); j++) {
+            nombres[j+1] = nombresUnicos.get(j);
+        }
+
+        return nombres;
     }
 }
