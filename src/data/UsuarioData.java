@@ -1,5 +1,7 @@
 package data;
 
+import business.EncuestaBusiness;
+import business.NombresDeArchivosBusiness;
 import domain.Administrador;
 import domain.Encuesta;
 import domain.Encuestado;
@@ -92,8 +94,8 @@ public class UsuarioData {
 
     public Encuestado[] getEncuestados() {
 
-        int cantidadEncuestas = this.raiz.getContentSize();
-        Encuestado[] encuestados = new Encuestado[cantidadEncuestas];
+        int cantidadEncuestados = this.raiz.getContentSize();
+        Encuestado[] encuestados = new Encuestado[cantidadEncuestados];
         int contador = 0;
 
         List listaElementosEncuestados = this.raiz.getChildren();
@@ -101,21 +103,36 @@ public class UsuarioData {
         for (Object objetoActual : listaElementosEncuestados) {
 
             List<Encuesta> listaEncuestasRecibidas = new ArrayList<>();
-            List<String> listaNombres = new ArrayList<>();
+           
 
             Element elementoActual = (Element) objetoActual;
-
-            List listaEncuestas = elementoActual.getChild("encuestas").getContent();
+            List listaEncuestas = elementoActual.getChild("encuestas").getChildren();
+             List<String> listaNombres = new ArrayList<>();
 
             for (Object objetoEncuesta : listaEncuestas) {
 
                 Element encuestaActual = (Element) objetoEncuesta;
-                String compActual = encuestaActual.getText();
+                String compActual = encuestaActual.getValue();
 
                 listaNombres.add(compActual);
             }
+            
+            for (int i = 0; i < listaNombres.size(); i++) {
+                System.out.println("NOMBRES DE LAS ENCUESTAS: "+listaNombres.get(i));
+                
+            }
 
-            //TODO recuperar encuestas a partir del nombre
+             NombresDeArchivosBusiness nombreBusiness = new NombresDeArchivosBusiness();
+            List<String> listaNombresEncuestas = nombreBusiness.getNombres();
+            
+             for (int i = 0; i < listaNombresEncuestas.size(); i++) {
+                 EncuestaBusiness encuestaBusiness = new EncuestaBusiness(listaNombresEncuestas.get(i));
+                 Encuesta encuestaTemporal = encuestaBusiness.getEncuesta(listaNombresEncuestas.get(i));
+                if(encuestaTemporal.getTitulo().equals(listaNombres.get(i))){
+                    listaEncuestasRecibidas.add(encuestaTemporal);
+                }
+            }
+            
             Encuestado encuestadoActual = new Encuestado(elementoActual.getChild("nombre").getValue(),
                     elementoActual.getAttributeValue("nickname"),
                     elementoActual.getChild("contrasenna").getValue(),
