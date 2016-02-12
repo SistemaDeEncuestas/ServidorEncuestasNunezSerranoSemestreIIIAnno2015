@@ -29,7 +29,15 @@ public class Encuestado extends Usuario{
     public void setListaEncuestas(List<Encuesta> listaEncuestas) {
         this.listaEncuestas = listaEncuestas;
     }
+    
+    public void agregaEncuesta(Encuesta encuesta){
+        this.listaEncuestas.add(encuesta);
+    }
 
+    public void eliminaEncuesta(Encuesta encuesta){
+        this.listaEncuestas.remove(encuesta);
+    }
+    
     @Override
     public String toString() {
         return "Encuestado{" + "listaEncuestas=" + listaEncuestas + '}';

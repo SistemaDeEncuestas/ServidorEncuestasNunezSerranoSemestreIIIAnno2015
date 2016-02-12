@@ -32,7 +32,13 @@ public class Administrador extends Usuario {
         this.encuestasCreadas = encuestasCreadas;
     }
 
+   public void agregaEncuesta(Encuesta encuesta){
+       this.encuestasCreadas.add(encuesta);
+   }
    
+   public void eliminaEncuesta(Encuesta encuesta){
+       this.encuestasCreadas.remove(encuesta);
+   }
 
     public boolean isPrimeraVez() {
         return primeraVez;

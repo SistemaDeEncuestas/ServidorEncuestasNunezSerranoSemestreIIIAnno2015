@@ -16,7 +16,7 @@ public class AdministradorBusiness {
 
     private AdministradorData adminData;
 
-    public AdministradorBusiness(String nombreArchivo){
+    public AdministradorBusiness(String nombreArchivo) {
         try {
             this.adminData = new AdministradorData(nombreArchivo);
         } catch (JDOMException | IOException ex) {
@@ -24,12 +24,24 @@ public class AdministradorBusiness {
         }
     }
 
-    public void insertar(Administrador administrador){
+    public boolean insertar(Administrador administrador) {
+        boolean existe = false;
+        Administrador[] administradores = getAdministradores();
+        for (int i = 0; i < administradores.length; i++) {
+            if (administradores[i].getNombreUsuario().equals(administrador.getNombreUsuario())) {
+                existe = true;
+            }
+        }
         try {
-            this.adminData.insertar(administrador);
+            if (!existe) {
+                this.adminData.insertar(administrador);
+                return true;
+            }
+
         } catch (IOException ex) {
             Logger.getLogger(AdministradorBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return false;
     }
 
     public Administrador[] getAdministradores() {
@@ -39,17 +51,17 @@ public class AdministradorBusiness {
     public Administrador getAdministrador(String nickname) {
         return this.adminData.getAdministrador(nickname);
     }
-    
-     public boolean eliminaAdministrador(String nickname){
+
+    public boolean eliminaAdministrador(String nickname) {
         try {
             return this.adminData.eliminaAdministrador(nickname);
         } catch (IOException ex) {
             Logger.getLogger(AdministradorBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
-     }
-    
-     public String[] getNombresAdministradores(){
+    }
+
+    public String[] getNombresAdministradores() {
         return this.adminData.getNombresAdministradores();
-     }
+    }
 }

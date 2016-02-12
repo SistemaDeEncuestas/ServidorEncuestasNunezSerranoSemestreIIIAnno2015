@@ -4,6 +4,7 @@ import data.UsuarioData;
 import domain.Encuestado;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdom.JDOMException;
@@ -25,12 +26,25 @@ public class UsuarioBusiness {
 
     }
 
-    public void insertar(Encuestado encuestado) {
+    public boolean insertar(Encuestado encuestado) {
+        boolean existe = false;
         try {
-            this.userData.insertar(encuestado);
+
+            Encuestado[] encuestados = getEncuestados();
+            for (int i = 0; i < encuestados.length; i++) {
+                if (encuestados[i].getNombreUsuario().equals(encuestado.getNombreUsuario())) {
+                    existe = true;
+                }
+            }
+            if (!existe) {
+                this.userData.insertar(encuestado);
+                return true;
+            }
+
         } catch (IOException ex) {
             Logger.getLogger(UsuarioBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return false;
     }
 
     public Encuestado[] getEncuestados() {
