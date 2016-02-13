@@ -132,7 +132,7 @@ public class ServidorInterfaz extends JFrame implements ActionListener{
             servidor.correHilo(this.jlEstado, this.jtaConsola);
             
             this.hilo = new Thread(servidor);
-            hilo.start();
+            this.hilo.start();
         }
         
         if (e.getSource() == this.jmiSalir) {

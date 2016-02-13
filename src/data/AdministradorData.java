@@ -4,7 +4,6 @@ import business.EncuestaBusiness;
 import business.NombresDeArchivosBusiness;
 import domain.Administrador;
 import domain.Encuesta;
-import domain.Pregunta;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -7,7 +7,6 @@ import java.io.PrintStream;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
@@ -45,21 +44,19 @@ public class Servidor implements Runnable{
             this.jtaConsola.append("Servidor iniciado\n");
             do {
                 socket = serverSocket.accept();
-                PrintStream enviar = new PrintStream(socket.getOutputStream());
+                
                 BufferedReader recibir = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintStream enviar = new PrintStream(socket.getOutputStream());
                 
-                Scanner s = new Scanner(System.in);
-                String b = s.nextLine();
+                String peticion = recibir.readLine();
                 
-                jtaConsola.append("Yo: "+b+"\n");
+                this.jtaConsola.append("Cliente dice "+peticion+"\n");
                 
-                enviar.println(b);
-                this.jtaConsola.append("Daniel dice: "+recibir.readLine()+"\n");
-                
-                socket.close(); 
+                enviar.println("ya recibi lo que usted me mando ");
                 
             } while (this.flag);
             
+            socket.close();
             
         }catch(BindException e){
         } catch (IOException ex) {

@@ -3,7 +3,6 @@ package business;
 import data.EncuestaData;
 import domain.Encuesta;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdom.JDOMException;
@@ -44,7 +43,7 @@ public class EncuestaBusiness {
         return false;
     }
     
-    public List<Encuesta> getTodasLasEncuestas(){
+    public Encuesta[] getTodasLasEncuestas(){
         try {
             return this.encuestaData.getTodasLasEncuestas();
         } catch (IOException | JDOMException ex) {
@@ -62,12 +61,10 @@ public class EncuestaBusiness {
         return null;
     }
     
-    public List<Encuesta> getEncuestasPorAdmin(String nickname){
+    public Encuesta[] getEncuestasPorAdmin(String nickname){
         try {
             return this.encuestaData.getEncuestasPorAdmin(nickname);
-        } catch (IOException ex) {
-            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JDOMException ex) {
+        } catch (IOException | JDOMException ex) {
             Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;

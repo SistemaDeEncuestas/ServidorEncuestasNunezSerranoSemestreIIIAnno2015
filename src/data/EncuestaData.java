@@ -118,10 +118,10 @@ public class EncuestaData {
         return true;//insertado con exito
     }
 
-    public List<Encuesta> getTodasLasEncuestas() throws IOException, JDOMException {
+    public Encuesta[] getTodasLasEncuestas() throws IOException, JDOMException {
 
         List<String> nombresDeArchivos = this.nombresDeArchivosBusiness.getNombres();
-        List<Encuesta> listaEncuestas = new ArrayList<>();
+        Encuesta[] listaEncuestas = new Encuesta[nombresDeArchivos.size()];
 
         for (int i = 0; i < nombresDeArchivos.size(); i++) {
 
@@ -131,7 +131,7 @@ public class EncuestaData {
 
             Encuesta encuesta = getEncuestaPorArchivoBusiness.getEncuesta();
 
-            listaEncuestas.add(encuesta);
+            listaEncuestas[i] = encuesta;
         }
 
         return listaEncuestas;
@@ -148,14 +148,14 @@ public class EncuestaData {
         return encuesta;
     }
 
-    public List<Encuesta> getEncuestasPorAdmin(String nickname) throws IOException, JDOMException {
-        List<Encuesta> listaEncuestas = new ArrayList<>();
-
-        List<Encuesta> todasLasEncuestas = getTodasLasEncuestas();
-
-        for (Encuesta encuesta : todasLasEncuestas) {
-            if (encuesta.getCreador().equals(nickname)) {
-                listaEncuestas.add(encuesta);
+    public Encuesta[] getEncuestasPorAdmin(String nickname) throws IOException, JDOMException {
+        
+        Encuesta[] todasLasEncuestas = getTodasLasEncuestas();
+        Encuesta[] listaEncuestas = new Encuesta[todasLasEncuestas.length];
+        
+        for (int i = 0; i< listaEncuestas.length; i++) {
+            if (todasLasEncuestas[i].getCreador().equals(nickname)) {
+                listaEncuestas[i] = todasLasEncuestas[i];
             }
         }
 
