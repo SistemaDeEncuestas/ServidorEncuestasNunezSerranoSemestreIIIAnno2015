@@ -2,6 +2,7 @@ package logic;
 
 import business.AdministradorBusiness;
 import business.NombresDeArchivosBusiness;
+import domain.Administrador;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JList;
@@ -26,6 +27,7 @@ public class ListasServidor implements Runnable{
         
         while(true){
             this.administradorBusiness = new AdministradorBusiness("admin");
+            
             this.listaAdmins.setListData(this.administradorBusiness.getNombresAdministradores());
             
             this.nombresDeArchivosBusiness = new NombresDeArchivosBusiness();
