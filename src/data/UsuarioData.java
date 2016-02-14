@@ -170,4 +170,16 @@ public class UsuarioData {
         }
         return false;
     }
+   
+    
+    public boolean editaEncuestado(Encuestado encuestado) throws IOException{
+        
+        boolean eliminado = eliminaEncuestado(encuestado.getNombreUsuario());
+        if(eliminado){
+            insertar(encuestado);
+            return true;
+        }
+        return false;
+    }
+    
 }

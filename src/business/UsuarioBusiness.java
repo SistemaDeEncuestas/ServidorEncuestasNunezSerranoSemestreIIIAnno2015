@@ -50,10 +50,10 @@ public class UsuarioBusiness {
     }
 
     public Encuestado getEncuestado(String nickname, String contrasenna) {
-        
+
         if (this.userData.getEncuestado(nickname).getContrasenna().equals(contrasenna)) {
             return this.userData.getEncuestado(nickname);
-        }else{
+        } else {
             return null;
         }
     }
@@ -61,6 +61,15 @@ public class UsuarioBusiness {
     public boolean eliminaEncuestado(String nickname) {
         try {
             return this.userData.eliminaEncuestado(nickname);
+        } catch (IOException ex) {
+            Logger.getLogger(UsuarioBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public boolean editaEncuestado(Encuestado encuestado) {
+        try {
+            return this.userData.editaEncuestado(encuestado);
         } catch (IOException ex) {
             Logger.getLogger(UsuarioBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }

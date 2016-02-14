@@ -47,10 +47,10 @@ public class AdministradorBusiness {
     }
 
     public Administrador getAdministrador(String nickname, String contrasenna) {
-        
+
         if (this.adminData.getAdministrador(nickname).getContrasenna().equals(contrasenna)) {
             return this.adminData.getAdministrador(nickname);
-        }else{
+        } else {
             return null;
         }
     }
@@ -66,5 +66,15 @@ public class AdministradorBusiness {
 
     public String[] getNombresAdministradores() {
         return this.adminData.getNombresAdministradores();
+    }
+
+    public boolean editaAdministrador(Administrador administrador) {
+        try {
+            return this.adminData.editaAdministrador(administrador);
+        } catch (IOException ex) {
+            Logger.getLogger(AdministradorBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+
     }
 }

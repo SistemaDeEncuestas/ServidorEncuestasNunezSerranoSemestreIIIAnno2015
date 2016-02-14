@@ -169,7 +169,10 @@ public class AdministradorData {
         }
         return false;
     }
-
+/**
+ * @deprecated 
+ * @return 
+ */
     public String[] getNombresAdministradores() {
         List<String> nombresUnicos = new ArrayList<>();
 
@@ -193,5 +196,15 @@ public class AdministradorData {
         }
 
         return nombres;
+    }
+    
+    public boolean editaAdministrador(Administrador administrador) throws IOException{
+        
+        boolean eliminado = eliminaAdministrador(administrador.getNombreUsuario());
+        if(eliminado){
+            insertar(administrador);
+            return true;
+        }
+        return false;
     }
 }
