@@ -15,7 +15,7 @@ public class EncuestaBusiness {
     private EncuestaData encuestaData;
 
     /**
-     * Este constructor es para los metodos de escritura como insertar y borrar
+     * Este constructor es para los metodos de escritura como insertar, editar y borrar
      * @param nombreArchivo  Recibe el nombre de la encuesta
      **/
     public EncuestaBusiness(String nombreArchivo) {
@@ -57,6 +57,16 @@ public class EncuestaBusiness {
             return this.encuestaData.getEncuesta();
         } catch (JDOMException | IOException ex) {
             Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public Encuesta getEncuesta(String nombreEncuesta){
+        
+        for (int i = 0; i < getTodasLasEncuestas().length; i++) {
+            if (getTodasLasEncuestas()[i].getTitulo().equals(nombreEncuesta)) {
+                return getTodasLasEncuestas()[i];
+            }
         }
         return null;
     }

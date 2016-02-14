@@ -14,7 +14,17 @@ import domain.Pregunta;
 import domain.PreguntaAbierta;
 import domain.PreguntaRespuestaMultiple;
 import domain.PreguntaRespuestaUnica;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.ConnectException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,14 +36,14 @@ import org.jdom.JDOMException;
  *
  * @author adriansb3105
  */
-public class prueba extends javax.swing.JFrame {
+public class Cliente extends javax.swing.JFrame {
 
     int alto;
 
     /**
      * Creates new form prueba
      */
-    public prueba() {
+    public Cliente() {
 //        initComponents();
 
     }
@@ -97,7 +107,8 @@ public class prueba extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-////        /* Set the Nimbus look and feel */
+        
+            ////        /* Set the Nimbus look and feel */
 ////        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
 ////        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
 ////         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -110,20 +121,20 @@ public class prueba extends javax.swing.JFrame {
 ////                }
 ////            }
 ////        } catch (ClassNotFoundException ex) {
-////            java.util.logging.Logger.getLogger(prueba.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+////            java.util.logging.Logger.getLogger(Cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 ////        } catch (InstantiationException ex) {
-////            java.util.logging.Logger.getLogger(prueba.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+////            java.util.logging.Logger.getLogger(Cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 ////        } catch (IllegalAccessException ex) {
-////            java.util.logging.Logger.getLogger(prueba.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+////            java.util.logging.Logger.getLogger(Cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 ////        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-////            java.util.logging.Logger.getLogger(prueba.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+////            java.util.logging.Logger.getLogger(Cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 ////        }
 ////        //</editor-fold>
 ////
 ////        /* Create and display the form */
 ////        java.awt.EventQueue.invokeLater(new Runnable() {
 ////            public void run() {
-////                new prueba().setVisible(true);
+////                new Cliente().setVisible(true);
 ////            }
 ////        });
 
@@ -158,28 +169,38 @@ public class prueba extends javax.swing.JFrame {
 //        preguntas.add(p6);
 ////        preguntas.add(p7);
 //        
-//        Encuesta encuesta2 = new Encuesta("Adrian", "Encuesta para la prueba titulo 1",
+//        Encuesta encuesta2 = new Encuesta("Adrian", "Encuesta para la Cliente titulo 1",
 //                                          "Esta es la descripcion de la encuesta 1", preguntas);
-//        
-//        
+//
+//
 //        
 //        if (encuestaBusiness.insertar(encuesta2)) {
 //            System.out.println("insertada la "+encuesta2.getTitulo());
 //        }else{
 //            System.out.println("la encuesta "+encuesta2.getTitulo() + " ya existe");
 //        }
-        
-        
-//        EncuestaBusiness e = new EncuestaBusiness("miArchivo2");
-//        e.borrarEncuesta();
+            EncuestaBusiness e = new EncuestaBusiness("miArchivo1");
+            Encuesta encuesta = e.getEncuesta();
 
-        EncuestaBusiness e = new EncuestaBusiness("miArchivo1");
-//        e.borrarEncuesta();
-        Encuesta a = e.getEncuesta();
-//        
-        a.setTitulo("Aqui va el titulo - hoda");
-//        
-        System.out.println(e.editarEncuesta(a));
+        try {
+            InetAddress direccionIP = InetAddress.getByName("127.0.0.1");
+            Socket socket = new Socket(direccionIP, 5700);
+            
+            ObjectOutputStream enviar = new ObjectOutputStream(socket.getOutputStream());
+            enviar.writeObject(encuesta);
+            
+            enviar.close();
+            socket.close();
+        } catch (UnknownHostException ex) {
+
+
+        } catch (ConnectException ess) {
+            System.out.println("SERVIDOR EN MANTENIMIENTO");
+            System.exit(0);
+        } catch (IOException ex) {
+            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

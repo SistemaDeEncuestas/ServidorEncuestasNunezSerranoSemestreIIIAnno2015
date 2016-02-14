@@ -34,7 +34,7 @@ public class EncuestaData {
     private String nombreArchivo;
 
     /**
-     * Este constructor es para los metodos de escritura como insertar y borrar
+     * Este constructor es para los metodos de escritura como insertar, editar y borrar
      *
      * @param rutaArchivo Recibe el nombre de la encuesta
      * @throws JDOMException

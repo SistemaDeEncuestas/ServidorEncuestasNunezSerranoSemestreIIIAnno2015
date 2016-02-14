@@ -1,5 +1,6 @@
 package domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import java.util.List;
  *
  * @author Daniel
  */
-public class Encuesta {
+public class Encuesta implements Serializable{
     private String creador;
     private String titulo;
     private String descripcion;

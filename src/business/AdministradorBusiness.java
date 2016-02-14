@@ -2,7 +2,6 @@ package business;
 
 import data.AdministradorData;
 import domain.Administrador;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +36,6 @@ public class AdministradorBusiness {
                 this.adminData.insertar(administrador);
                 return true;
             }
-
         } catch (IOException ex) {
             Logger.getLogger(AdministradorBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -48,8 +46,13 @@ public class AdministradorBusiness {
         return this.adminData.getAdministradores();
     }
 
-    public Administrador getAdministrador(String nickname) {
-        return this.adminData.getAdministrador(nickname);
+    public Administrador getAdministrador(String nickname, String contrasenna) {
+        
+        if (this.adminData.getAdministrador(nickname).getContrasenna().equals(contrasenna)) {
+            return this.adminData.getAdministrador(nickname);
+        }else{
+            return null;
+        }
     }
 
     public boolean eliminaAdministrador(String nickname) {

@@ -27,7 +27,7 @@ public class UsuarioData {
     private String rutaArchivo;
 
     public UsuarioData(String rutaArchivo) throws JDOMException, IOException {
-        this.rutaArchivo = rutaArchivo;
+        this.rutaArchivo = "src/files/"+rutaArchivo+".xml";
         File archivo = new File(this.rutaArchivo);
 
         if (archivo.exists()) {

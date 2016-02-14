@@ -2,9 +2,7 @@ package business;
 
 import data.UsuarioData;
 import domain.Encuestado;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdom.JDOMException;
@@ -51,8 +49,13 @@ public class UsuarioBusiness {
         return this.userData.getEncuestados();
     }
 
-    public Encuestado getEncuestado(String nickname) {
-        return this.userData.getEncuestado(nickname);
+    public Encuestado getEncuestado(String nickname, String contrasenna) {
+        
+        if (this.userData.getEncuestado(nickname).getContrasenna().equals(contrasenna)) {
+            return this.userData.getEncuestado(nickname);
+        }else{
+            return null;
+        }
     }
 
     public boolean eliminaEncuestado(String nickname) {
