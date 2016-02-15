@@ -1,5 +1,6 @@
 package logic;
 
+import business.UsuarioBusiness;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JList;
@@ -9,11 +10,12 @@ import javax.swing.JList;
  */
 public class UsuariosConectados implements Runnable{
     
+    private UsuarioBusiness usuarioBusiness;
     private JList<String> listaUsuariosConectados;
-    String[] usuarios = {"Usuarios conectados", "usuario 1", "usuario 2", "usuario 3", "usuario 4", "usuario 5"};
     
     public UsuariosConectados(JList listaUsuariosConectados) {
         this.listaUsuariosConectados = listaUsuariosConectados;
+        this.usuarioBusiness = new UsuarioBusiness();
     }
 
     @Override
@@ -21,7 +23,7 @@ public class UsuariosConectados implements Runnable{
         
         while(true){
             
-        this.listaUsuariosConectados.setListData(usuarios);
+        this.listaUsuariosConectados.setListData(this.usuarioBusiness.getUsuariosConectados());
             
             try {
                 Thread.sleep(2000);
