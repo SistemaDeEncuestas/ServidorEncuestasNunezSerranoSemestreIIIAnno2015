@@ -28,7 +28,10 @@ public class GetEncuestaPorArchivoData {
     private Element raiz;
     private String rutaArchivo;
 
-    public GetEncuestaPorArchivoData(String rutaArchivo) throws JDOMException, IOException {
+    public GetEncuestaPorArchivoData() throws JDOMException, IOException {
+    }
+
+    public void iniciar(String rutaArchivo) throws JDOMException, IOException{
         this.rutaArchivo = rutaArchivo;
         File archivo = new File(this.rutaArchivo);
         
@@ -41,14 +44,8 @@ public class GetEncuestaPorArchivoData {
             this.raiz = new Element(rutaArchivo);
             this.documento = new Document(this.raiz);
 
-//            guardarXML();
         }
     }
-
-//    public void guardarXML() throws FileNotFoundException, IOException {
-//        XMLOutputter xmlOutputter = new XMLOutputter();
-//        xmlOutputter.output(this.documento, new PrintWriter(this.rutaArchivo));
-//    }
     
     public Encuesta getEncuesta(){
         
@@ -57,6 +54,7 @@ public class GetEncuestaPorArchivoData {
         Element elemCreador = this.raiz.getChild("creador");
         Element elemTitulo = this.raiz.getChild("titulo");
         Element elemDescripcion = this.raiz.getChild("descripcion");
+        Element elemNombreArchivo = this.raiz.getChild("nombreArchivo");
         Element elemPreguntas = this.raiz.getChild("preguntas");
         
         List lista = elemPreguntas.getChildren();
@@ -92,7 +90,7 @@ public class GetEncuestaPorArchivoData {
         }
         
         Encuesta encuesta = new Encuesta(elemCreador.getValue(), elemTitulo.getValue(),
-                                        elemDescripcion.getValue(), listaPreguntas);
+                                        elemDescripcion.getValue(), elemNombreArchivo.getValue(), listaPreguntas);
         
         
         return encuesta;

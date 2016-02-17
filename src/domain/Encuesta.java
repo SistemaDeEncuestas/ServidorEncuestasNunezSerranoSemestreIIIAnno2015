@@ -9,34 +9,44 @@ import java.util.List;
  * @author Daniel
  */
 public class Encuesta implements Serializable{
-    private String creador;
+    private String nickname;
     private String titulo;
     private String descripcion;
     private List<Pregunta> preguntas;
+    private String nombreArchivo;
 
-    public Encuesta(String creador, String titulo, String descripcion, List<Pregunta> preguntas) {
-        this.creador = creador;
+    public Encuesta(String nickname, String titulo, String descripcion, String nombreArchivo, List<Pregunta> preguntas) {
+        this.nickname = nickname;
         this.titulo = titulo;
         this.descripcion = descripcion;
+        this.nombreArchivo = nombreArchivo;
         this.preguntas = preguntas;
     }
 
     public Encuesta() {
-        this.creador = "";
+        this.nickname = "";
         this.titulo = "";
         this.descripcion = "";
         this.preguntas = new ArrayList<>();
     }
     
 
-    public String getCreador() {
-        return creador;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setCreador(String creador) {
-        this.creador = creador;
+    public void setNickname(String creador) {
+        this.nickname = creador;
     }
 
+    public String getNombreArchivo() {
+        return nombreArchivo;
+    }
+
+    public void setNombreArchivo(String nombreArchivo) {
+        this.nombreArchivo = nombreArchivo;
+    }
+    
     public String getTitulo() {
         return titulo;
     }
@@ -63,7 +73,8 @@ public class Encuesta implements Serializable{
 
     @Override
     public String toString() {
-        return "Encuesta{" + "creador=" + creador + ", titulo=" + titulo + ", descripcion=" + descripcion + ", preguntas=" + preguntas + '}';
+//        return "Encuesta{" + "creador=" + nickname + ", titulo=" + titulo + ", descripcion=" + descripcion + ", preguntas=" + preguntas + '}';
+        return "Encuesta{" + "creador=" + nickname + ", descripcion=" + descripcion + ", preguntas=" + preguntas + '}';
     }
     
 }

@@ -17,13 +17,11 @@ public class UsuarioBusiness {
     private UsuarioData userData;
     private List<String> usuariosConectados;
 
+    
     public UsuarioBusiness() {
-    }
-
-    public UsuarioBusiness(String nombreArchivo) {
         this.usuariosConectados = new ArrayList<>();
         try {
-            this.userData = new UsuarioData(nombreArchivo);
+            this.userData = new UsuarioData();
         } catch (JDOMException | IOException ex) {
             Logger.getLogger(UsuarioBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -36,7 +34,7 @@ public class UsuarioBusiness {
 
             Encuestado[] encuestados = getEncuestados();
             for (int i = 0; i < encuestados.length; i++) {
-                if (encuestados[i].getNombreUsuario().equals(encuestado.getNombreUsuario())) {
+                if (encuestados[i].getNickname().equals(encuestado.getNickname())) {
                     existe = true;
                 }
             }

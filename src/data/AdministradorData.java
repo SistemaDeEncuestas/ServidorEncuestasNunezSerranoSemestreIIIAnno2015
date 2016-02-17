@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -22,12 +23,14 @@ import org.jdom.output.XMLOutputter;
  */
 public class AdministradorData {
 
+    private EncuestaData encuestaData;
     private Document documento;
     private Element raiz;
     private String rutaArchivo;
 
-    public AdministradorData(String rutaArchivo) throws JDOMException, IOException {
-        this.rutaArchivo = "src/files/" + rutaArchivo + ".xml";
+    public AdministradorData() throws JDOMException, IOException {
+        this.encuestaData = new EncuestaData();
+        this.rutaArchivo = "src/files/administradores.xml";
         File archivo = new File(this.rutaArchivo);
 
         if (archivo.exists()) {
@@ -36,7 +39,7 @@ public class AdministradorData {
             this.documento = saxBuilder.build(this.rutaArchivo);
             this.raiz = this.documento.getRootElement();
         } else {
-            this.raiz = new Element("Administradores");
+            this.raiz = new Element("administradores");
             this.documento = new Document(this.raiz);
 
             guardarXML();
@@ -51,7 +54,7 @@ public class AdministradorData {
     public void insertar(Administrador administrador) throws IOException {
 
         Element eAdministrador = new Element("administrador");
-        eAdministrador.setAttribute("nickname", administrador.getNombreUsuario());
+        eAdministrador.setAttribute("nickname", administrador.getNickname());
         Element eNombre = new Element("nombre");
         eNombre.addContent(administrador.getNombre());
         eAdministrador.addContent(eNombre);
@@ -62,22 +65,19 @@ public class AdministradorData {
         eCorreo.addContent(administrador.getCorreoElectronico());
         eAdministrador.addContent(eCorreo);
 
-        List<Encuesta> listaObjetos = administrador.getEncuestasCreadas();
-
-        Element eEncuestas = new Element("encuestas");
-
-        for (int i = 0; i < listaObjetos.size(); i++) {
-
-            Element eEncuesta = new Element("encuesta" + i);
-
-            Element eTitulo = new Element("titulo");
-            eTitulo.addContent(listaObjetos.get(i).getTitulo());
-
-            eEncuesta.addContent(eTitulo);
-
-            eEncuestas.addContent(eEncuesta);
-        }
-        eAdministrador.addContent(eEncuestas);
+//        System.out.println("num: "+administrador.getEncuestasCreadas() + "--- tam: "+ administrador.getEncuestasCreadas().size());
+//        
+//        List<String> listaEncuestas = administrador.getEncuestasCreadas();
+////        Element eEncuestas = new Element("encuestas");
+//
+//        for (int i = 0; i < listaEncuestas.size(); i++) {
+//            Element eEncuesta = new Element("encuesta" + i);
+//            eEncuesta.addContent(listaEncuestas.get(i));
+//            eEncuestas.addContent(eEncuesta);
+//        }
+//        eAdministrador.addContent(eEncuestas);
+        
+        
         Element ePrimeraVez = new Element("primeraVez");
         String tipo = String.valueOf(administrador.isPrimeraVez());
         ePrimeraVez.addContent(tipo);
@@ -85,10 +85,15 @@ public class AdministradorData {
 
         this.raiz.addContent(eAdministrador);
         guardarXML();
-
     }
 
-    public Administrador[] getAdministradores() {
+    public boolean insertarEncuesta(String nombreEncuesta, String nickName) throws IOException, JDOMException{
+        Administrador admin = getAdministrador(nickName);
+        admin.addEncuestasCreadas(nombreEncuesta);
+        return editaAdministrador(admin);
+    }
+    
+    public Administrador[] getAdministradores() throws IOException, JDOMException {
 
         int cantidadProyectos = this.raiz.getContentSize();
         Administrador[] administradores = new Administrador[cantidadProyectos];
@@ -98,39 +103,45 @@ public class AdministradorData {
 
         for (Object objetoActual : listaElementosAdmins) {
 
-            List<Encuesta> listaEncuestasCreadas = new ArrayList<>();
-
+//            List<Encuesta> listaEncuestasCreadas = new ArrayList<>();
 
             Element elementoActual = (Element) objetoActual;
 
-            List listaNombresEncuestasXML = elementoActual.getChild("encuestas").getContent();
-
-
-            NombresDeArchivosBusiness nombreBusiness = new NombresDeArchivosBusiness();
-            List<String> listaNombresEncuestas = nombreBusiness.getNombres();
-
-            for (int i = 0; i < listaNombresEncuestas.size(); i++) {
-                EncuestaBusiness encuestaBusiness = new EncuestaBusiness(listaNombresEncuestas.get(i));
-                Encuesta encuestaTemporal = encuestaBusiness.getEncuesta();
-                if (encuestaTemporal.getCreador().equals(elementoActual.getAttributeValue("nickname"))) {
-                    listaEncuestasCreadas.add(encuestaTemporal);
-                }
-            }
+//            NombresDeArchivosBusiness nombreBusiness = new NombresDeArchivosBusiness();
+            List<String> listaNombresEncuestas = new ArrayList<>();
+            
+//            for (int i = 0; i < listaNombresEncuestas.size(); i++) {
+//                encuestaBusiness.iniciar(listaNombresEncuestas.get(i));
+//                Encuesta encuestaTemporal = encuestaBusiness.getEncuesta();
+//                if (encuestaTemporal.getNickname().equals(elementoActual.getAttributeValue("nickname"))) {
+////                    listaEncuestasCreadas.add(encuestaTemporal.get);
+//                }
+//            }
 
             Administrador adminActual = new Administrador(elementoActual.getChild("nombre").getValue(),
                     elementoActual.getAttributeValue("nickname"),
                     elementoActual.getChild("contrasenna").getValue(),
                     elementoActual.getChild("correo").getValue());
 
-            adminActual.setEncuestasCreadas(listaEncuestasCreadas);
-
+//            adminActual.setEncuestasCreadas(this.encuestaData.getNombresDeEncuestasPorAdmin(elementoActual.getAttributeValue("nickname")));
+            
+            Encuesta[] aux = this.encuestaData.getEncuestasPorAdmin(elementoActual.getAttributeValue("nickname"));
+            
+            for (int i = 0; i < aux.length; i++) {
+                listaNombresEncuestas.add(aux[i].getNombreArchivo());
+            }
+            
+//            System.out.println("lista: "+listaNombresEncuestas);
+            
+            adminActual.setEncuestasCreadas(listaNombresEncuestas);
+            
             String primeraVez = (elementoActual.getChild("primeraVez").getValue());
             if (primeraVez.equals("true")) {
                 adminActual.setPrimeraVez(true);
             } else {
                 adminActual.setPrimeraVez(false);
             }
-
+ 
             administradores[contador++] = adminActual;
         }
 
@@ -138,14 +149,13 @@ public class AdministradorData {
 
     }
 
-    public Administrador getAdministrador(String nickname) {
+    public Administrador getAdministrador(String nickname) throws IOException, JDOMException {
 
-        Administrador[] admins = getAdministradores();
+        Administrador[] admin = getAdministradores();
 
-        for (int i = 0; i < admins.length; i++) {
-            if (admins[i].getNombreUsuario().equals(nickname)) {
-
-                return admins[i];
+        for (int i = 0; i < admin.length; i++) {
+            if (admin[i].getNickname().equals(nickname)) {
+                return admin[i];
             }
 
         }
@@ -169,39 +179,31 @@ public class AdministradorData {
         }
         return false;
     }
-/**
- * @deprecated 
- * @return 
- */
-    public String[] getNombresAdministradores() {
+
+    public String[] getNombresParaConsola() throws IOException, JDOMException {
         List<String> nombresUnicos = new ArrayList<>();
 
         for (int i = 0; i < getAdministradores().length; i++) {
-
             if (nombresUnicos.isEmpty()) {
-                nombresUnicos.add(getAdministradores()[i].getNombreUsuario());
+                nombresUnicos.add(getAdministradores()[i].getNickname());
             } else {
-                if (!nombresUnicos.contains(getAdministradores()[i].getNombreUsuario())) {
-                    nombresUnicos.add(getAdministradores()[i].getNombreUsuario());
+                if (!nombresUnicos.contains(getAdministradores()[i].getNickname())) {
+                    nombresUnicos.add(getAdministradores()[i].getNickname());
                 }
             }
         }
 
-        String[] nombres = new String[nombresUnicos.size()+1];
+        String[] nombres = new String[nombresUnicos.size()];
 
-        nombres[0] = "Administradores";
-        
         for (int j = 0; j < nombresUnicos.size(); j++) {
-            nombres[j+1] = nombresUnicos.get(j);
+            nombres[j] = nombresUnicos.get(j);
         }
-
         return nombres;
     }
-    
-    public boolean editaAdministrador(Administrador administrador) throws IOException{
-        
-        boolean eliminado = eliminaAdministrador(administrador.getNombreUsuario());
-        if(eliminado){
+
+    public boolean editaAdministrador(Administrador administrador) throws IOException {
+        boolean eliminado = eliminaAdministrador(administrador.getNickname());
+        if (eliminado) {
             insertar(administrador);
             return true;
         }

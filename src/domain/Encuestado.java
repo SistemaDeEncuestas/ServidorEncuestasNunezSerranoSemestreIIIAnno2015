@@ -11,8 +11,8 @@ public class Encuestado extends Usuario{
     
    private List<Encuesta> listaEncuestas;
 
-    public Encuestado(String nombre, String nombreUsuario, String contrasenna, String correoElectronico) {
-        super(nombre, nombreUsuario, contrasenna, correoElectronico);
+    public Encuestado(String nombre, String nickName, String contrasenna, String correoElectronico) {
+        super(nombre, nickName, contrasenna, correoElectronico);
         this.listaEncuestas = new ArrayList<>();
     }
 

@@ -30,16 +30,12 @@ public class NombresDeArchivosBusiness {
         }
     }
     
-    public List<String> getNombres(){
-        return this.nombresDeArchivosData.getNombres();
+    public List<String> getNombresDeEncuestas(){
+        return this.nombresDeArchivosData.getNombresDeEncuestas();
     }
     
     public boolean existeArchivo(String nombreArchivo){
         return this.nombresDeArchivosData.existeArchivo(nombreArchivo);
-    }
-    
-    public String[] listaNombresArchivos(){
-        return this.nombresDeArchivosData.listaNombresArchivos();
     }
     
     public boolean borrarNombreArchivo(String nombreArchivo){

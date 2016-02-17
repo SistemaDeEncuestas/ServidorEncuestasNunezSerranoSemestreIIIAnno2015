@@ -15,9 +15,9 @@ public class AdministradorBusiness {
 
     private AdministradorData adminData;
 
-    public AdministradorBusiness(String nombreArchivo) {
+    public AdministradorBusiness() {
         try {
-            this.adminData = new AdministradorData(nombreArchivo);
+            this.adminData = new AdministradorData();
         } catch (JDOMException | IOException ex) {
             Logger.getLogger(AdministradorBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -27,8 +27,9 @@ public class AdministradorBusiness {
         boolean existe = false;
         Administrador[] administradores = getAdministradores();
         for (int i = 0; i < administradores.length; i++) {
-            if (administradores[i].getNombreUsuario().equals(administrador.getNombreUsuario())) {
+            if (administradores[i].getNickname().equals(administrador.getNickname())) {
                 existe = true;
+                break;
             }
         }
         try {
@@ -42,17 +43,45 @@ public class AdministradorBusiness {
         return false;
     }
 
+    public boolean insertarEncuesta(String nombreEncuesta, String nickName){
+        try {
+            return this.adminData.insertarEncuesta(nombreEncuesta, nickName);
+        } catch (IOException ex) {
+            Logger.getLogger(AdministradorBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JDOMException ex) {
+            Logger.getLogger(AdministradorBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
     public Administrador[] getAdministradores() {
-        return this.adminData.getAdministradores();
+        try {
+            return this.adminData.getAdministradores();
+        } catch (IOException ex) {
+            Logger.getLogger(AdministradorBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JDOMException ex) {
+            Logger.getLogger(AdministradorBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     public Administrador getAdministrador(String nickname, String contrasenna) {
 
-        if (this.adminData.getAdministrador(nickname).getContrasenna().equals(contrasenna)) {
-            return this.adminData.getAdministrador(nickname);
-        } else {
+        try {
+            if (this.adminData.getAdministrador(nickname) != null) {
+                Administrador admin = this.adminData.getAdministrador(nickname);
+                if (admin.getContrasenna().equals(contrasenna)) {
+                    return admin;
+                }
+            }
+            
             return null;
+        } catch (IOException ex) {
+            Logger.getLogger(AdministradorBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JDOMException ex) {
+            Logger.getLogger(AdministradorBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
     }
 
     public boolean eliminaAdministrador(String nickname) {
@@ -65,7 +94,14 @@ public class AdministradorBusiness {
     }
 
     public String[] getNombresAdministradores() {
-        return this.adminData.getNombresAdministradores();
+        try {
+            return this.adminData.getNombresParaConsola();
+        } catch (IOException ex) {
+            Logger.getLogger(AdministradorBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JDOMException ex) {
+            Logger.getLogger(AdministradorBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     public boolean editaAdministrador(Administrador administrador) {

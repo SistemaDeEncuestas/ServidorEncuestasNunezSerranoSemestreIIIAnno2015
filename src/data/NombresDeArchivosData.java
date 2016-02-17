@@ -1,5 +1,6 @@
 package data;
 
+import domain.Encuesta;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -61,7 +62,7 @@ public class NombresDeArchivosData {
         guardarXML();
     }
 
-    public List<String> getNombres() {
+    public List<String> getNombresDeEncuestas() {
 
         List<String> listaNombres = new ArrayList<>();
         List listaElementos = this.raiz.getChildren();
@@ -73,10 +74,10 @@ public class NombresDeArchivosData {
 
         return listaNombres;
     }
-
+    
     public boolean existeArchivo(String nombreArchivo) {
 
-        List<String> lista = getNombres();
+        List<String> lista = getNombresDeEncuestas();
 
         for (String elem : lista) {
             if (elem.equals(nombreArchivo)) {
@@ -87,20 +88,6 @@ public class NombresDeArchivosData {
         return false;
     }
 
-    public String[] listaNombresArchivos() {
-
-        String[] nombres = new String[getNombres().size() + 1];
-
-        nombres[0] = "Encuestas Creadas";
-
-        for (int i = 0; i < getNombres().size(); i++) {
-            nombres[i + 1] = getNombres().get(i);
-        }
-
-        return nombres;
-
-    }
-    
     public boolean borrarNombreArchivo(String nombreArchivo) throws IOException{
         
         List listaElementos = this.raiz.getChildren();

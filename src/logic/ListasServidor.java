@@ -2,7 +2,6 @@ package logic;
 
 import business.AdministradorBusiness;
 import business.NombresDeArchivosBusiness;
-import domain.Administrador;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JList;
@@ -26,15 +25,26 @@ public class ListasServidor implements Runnable{
     public void run() {
         
         while(true){
-            this.administradorBusiness = new AdministradorBusiness("admin");
-            
-            this.listaAdmins.setListData(this.administradorBusiness.getNombresAdministradores());
-            
+            this.administradorBusiness = new AdministradorBusiness();
             this.nombresDeArchivosBusiness = new NombresDeArchivosBusiness();
-            this.listaEncuestas.setListData(this.nombresDeArchivosBusiness.listaNombresArchivos());
+            
+            String nombresAdmins[] = new String[(this.administradorBusiness.getNombresAdministradores().length)+(1)];
+            nombresAdmins[0] = "Administradores";
+            for (int i = 0; i < this.administradorBusiness.getNombresAdministradores().length; i++) {
+                nombresAdmins[i+1] = this.administradorBusiness.getNombresAdministradores()[i];
+            }
+            
+            String[] nombresEncuestas = new String[this.nombresDeArchivosBusiness.getNombresDeEncuestas().size()+1];
+            nombresEncuestas[0] = "Encuestas";
+            for (int i = 0; i < this.nombresDeArchivosBusiness.getNombresDeEncuestas().size(); i++) {
+                nombresEncuestas[i+1] = this.nombresDeArchivosBusiness.getNombresDeEncuestas().get(i);
+            }
+            
+            this.listaAdmins.setListData(nombresAdmins);
+            this.listaEncuestas.setListData(nombresEncuestas);
             
             try {
-                Thread.sleep(2000);
+                Thread.sleep(3000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ListasServidor.class.getName()).log(Level.SEVERE, null, ex);
             }

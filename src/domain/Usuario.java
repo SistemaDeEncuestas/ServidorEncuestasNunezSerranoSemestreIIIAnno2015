@@ -10,21 +10,21 @@ import java.io.Serializable;
 public class Usuario implements Serializable {
     
     private String nombre;
-    private String nombreUsuario;
+    private String nickname;
     private String contrasenna;
     private String correoElectronico;
 
     public Usuario() {
         this.nombre = "";
-        this.nombreUsuario = "";
+        this.nickname = "";
         this.contrasenna = "";
         this.correoElectronico = "";
     }
 
     
-    public Usuario(String nombre, String nombreUsuario, String contrasenna, String correoElectronico) {
+    public Usuario(String nombre, String nickname, String contrasenna, String correoElectronico) {
         this.nombre = nombre;
-        this.nombreUsuario = nombreUsuario;
+        this.nickname = nickname;
         this.contrasenna = contrasenna;
         this.correoElectronico = correoElectronico;
     }
@@ -37,12 +37,12 @@ public class Usuario implements Serializable {
         this.nombre = nombre;
     }
 
-    public String getNombreUsuario() {
-        return nombreUsuario;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
+    public void setNickname(String nombreUsuario) {
+        this.nickname = nombreUsuario;
     }
 
     public String getContrasenna() {
@@ -63,7 +63,7 @@ public class Usuario implements Serializable {
 
     @Override
     public String toString() {
-        return "Usuario{" + "nombre=" + nombre + ", nombreUsuario=" + nombreUsuario + 
+        return "Usuario{" + "nombre=" + nombre + ", nombreUsuario=" + nickname + 
                 ", contrasenna=" + contrasenna + ", correoElectronico=" + correoElectronico + '}';
     }
     

@@ -26,8 +26,8 @@ public class UsuarioData {
     private Element raiz;
     private String rutaArchivo;
 
-    public UsuarioData(String rutaArchivo) throws JDOMException, IOException {
-        this.rutaArchivo = "src/files/"+rutaArchivo+".xml";
+    public UsuarioData() throws JDOMException, IOException {
+        this.rutaArchivo = "src/files/usuarios.xml";
         File archivo = new File(this.rutaArchivo);
 
         if (archivo.exists()) {
@@ -36,7 +36,7 @@ public class UsuarioData {
             this.documento = saxBuilder.build(this.rutaArchivo);
             this.raiz = this.documento.getRootElement();
         } else {
-            this.raiz = new Element("Administradores");
+            this.raiz = new Element("encuestados");
             this.documento = new Document(this.raiz);
 
             guardarXML();
@@ -51,7 +51,7 @@ public class UsuarioData {
     public void insertar(Encuestado encuestado) throws IOException {
 
         Element eEncuestado = new Element("encuestado");
-        eEncuestado.setAttribute("nickname", encuestado.getNombreUsuario());
+        eEncuestado.setAttribute("nickname", encuestado.getNickname());
         Element eNombre = new Element("nombre");
         eNombre.addContent(encuestado.getNombre());
         eEncuestado.addContent(eNombre);
@@ -115,12 +115,13 @@ public class UsuarioData {
             }
 
             NombresDeArchivosBusiness nombreBusiness = new NombresDeArchivosBusiness();
-            List<String> listaNombresEncuestas = nombreBusiness.getNombres();
-
+            List<String> listaNombresEncuestas = nombreBusiness.getNombresDeEncuestas();
+            EncuestaBusiness encuestaBusiness = new EncuestaBusiness();
+            
             for (int i = 0; i < listaNombresEncuestas.size(); i++) {
-                EncuestaBusiness encuestaBusiness = new EncuestaBusiness(listaNombresEncuestas.get(i));
+                encuestaBusiness.iniciar(listaNombresEncuestas.get(i));
                 Encuesta encuestaTemporal = encuestaBusiness.getEncuesta();
-                if (encuestaTemporal.getTitulo().equals(listaNombres.get(i))) {
+                if (encuestaTemporal.getNombreArchivo().equals(listaNombres.get(i))) {
                     listaEncuestasRecibidas.add(encuestaTemporal);
                 }
             }
@@ -144,7 +145,7 @@ public class UsuarioData {
         Encuestado[] encuestados = getEncuestados();
 
         for (int i = 0; i < encuestados.length; i++) {
-            if (encuestados[i].getNombreUsuario().equals(nickname)) {
+            if (encuestados[i].getNickname().equals(nickname)) {
 
                 return encuestados[i];
             }
@@ -174,7 +175,7 @@ public class UsuarioData {
     
     public boolean editaEncuestado(Encuestado encuestado) throws IOException{
         
-        boolean eliminado = eliminaEncuestado(encuestado.getNombreUsuario());
+        boolean eliminado = eliminaEncuestado(encuestado.getNickname());
         if(eliminado){
             insertar(encuestado);
             return true;
