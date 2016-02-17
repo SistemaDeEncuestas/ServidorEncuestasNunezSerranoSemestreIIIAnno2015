@@ -89,7 +89,7 @@ public class Servidor implements Runnable {
                         } else {
                             this.administrador = this.administradorBusiness.getAdministrador(this.nick, this.contrasenna);
                             enviar.println(enviarPeticionLoginAdmin(this.administrador));
-                            this.jtaConsola.append(this.nick + " ha iniciado sesión");
+                            this.jtaConsola.append(this.nick + " ha iniciado sesión\n");
                         }
                         break;
 
