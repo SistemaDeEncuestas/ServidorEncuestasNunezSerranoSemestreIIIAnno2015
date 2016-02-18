@@ -62,21 +62,14 @@ public class UsuarioData {
         eCorreo.addContent(encuestado.getCorreoElectronico());
         eEncuestado.addContent(eCorreo);
 
-        List<Encuesta> listaObjetos = encuestado.getListaEncuestas();
+        List<String> listaObjetos = encuestado.getListaEncuestas();
 
         Element eEncuestas = new Element("encuestas");
 
         for (int i = 0; i < listaObjetos.size(); i++) {
-
             Element eEncuesta = new Element("encuesta" + i);
-
-            Element eTitulo = new Element("titulo");
-            eTitulo.addContent(listaObjetos.get(i).getTitulo());
-
-            eEncuesta.addContent(eTitulo);
-
+            eEncuesta.addContent(listaObjetos.get(i));
             eEncuestas.addContent(eEncuesta);
-
         }
         eEncuestado.addContent(eEncuestas);
 
@@ -90,40 +83,19 @@ public class UsuarioData {
         int cantidadEncuestados = this.raiz.getContentSize();
         Encuestado[] encuestados = new Encuestado[cantidadEncuestados];
         int contador = 0;
-
         List listaElementosEncuestados = this.raiz.getChildren();
 
         for (Object objetoActual : listaElementosEncuestados) {
-
-            List<Encuesta> listaEncuestasRecibidas = new ArrayList<>();
 
             Element elementoActual = (Element) objetoActual;
             List listaEncuestas = elementoActual.getChild("encuestas").getChildren();
             List<String> listaNombres = new ArrayList<>();
 
             for (Object objetoEncuesta : listaEncuestas) {
-
                 Element encuestaActual = (Element) objetoEncuesta;
                 String compActual = encuestaActual.getValue();
 
                 listaNombres.add(compActual);
-            }
-
-            for (int i = 0; i < listaNombres.size(); i++) {
-                System.out.println("NOMBRES DE LAS ENCUESTAS: " + listaNombres.get(i));
-
-            }
-
-            NombresDeArchivosBusiness nombreBusiness = new NombresDeArchivosBusiness();
-            List<String> listaNombresEncuestas = nombreBusiness.getNombresDeEncuestas();
-            EncuestaBusiness encuestaBusiness = new EncuestaBusiness();
-            
-            for (int i = 0; i < listaNombresEncuestas.size(); i++) {
-                encuestaBusiness.iniciar(listaNombresEncuestas.get(i));
-                Encuesta encuestaTemporal = encuestaBusiness.getEncuesta();
-                if (encuestaTemporal.getNombreArchivo().equals(listaNombres.get(i))) {
-                    listaEncuestasRecibidas.add(encuestaTemporal);
-                }
             }
 
             Encuestado encuestadoActual = new Encuestado(elementoActual.getChild("nombre").getValue(),
@@ -131,13 +103,12 @@ public class UsuarioData {
                     elementoActual.getChild("contrasenna").getValue(),
                     elementoActual.getChild("correo").getValue());
 
-            encuestadoActual.setListaEncuestas(listaEncuestasRecibidas);
+            encuestadoActual.setListaEncuestas(listaNombres);
 
             encuestados[contador++] = encuestadoActual;
         }
 
         return encuestados;
-
     }
 
     public Encuestado getEncuestado(String nickname) {

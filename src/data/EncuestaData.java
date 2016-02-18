@@ -105,7 +105,6 @@ public class EncuestaData {
         this.raiz.addContent(elemPreguntas);
         guardarXML();
 
-//        this.administradorBusiness.insertarEncuesta(encuesta.getNombreArchivo(), encuesta.getNickname());
         this.nombresDeArchivosData.insertarNombre(encuesta.getNombreArchivo(), encuesta.getNickname());
         return true;
     }

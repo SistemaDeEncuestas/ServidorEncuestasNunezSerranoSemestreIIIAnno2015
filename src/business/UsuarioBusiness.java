@@ -15,11 +15,10 @@ import org.jdom.JDOMException;
 public class UsuarioBusiness {
 
     private UsuarioData userData;
-    private List<String> usuariosConectados;
+//    private List<String> usuariosConectados;
 
-    
     public UsuarioBusiness() {
-        this.usuariosConectados = new ArrayList<>();
+//        this.usuariosConectados = new ArrayList<>();
         try {
             this.userData = new UsuarioData();
         } catch (JDOMException | IOException ex) {
@@ -55,11 +54,12 @@ public class UsuarioBusiness {
 
     public Encuestado getEncuestado(String nickname, String contrasenna) {
 
-        if (this.userData.getEncuestado(nickname).getContrasenna().equals(contrasenna)) {
-            return this.userData.getEncuestado(nickname);
-        } else {
-            return null;
+        if (this.userData.getEncuestado(nickname) != null) {
+            if (this.userData.getEncuestado(nickname).getContrasenna().equals(contrasenna)) {
+                return this.userData.getEncuestado(nickname);
+            }
         }
+        return null;
     }
 
     public boolean eliminaEncuestado(String nickname) {
@@ -78,19 +78,5 @@ public class UsuarioBusiness {
             Logger.getLogger(UsuarioBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
-    }
-
-    public String[] getUsuariosConectados() {
-        
-        String[] usuarios = new String[this.usuariosConectados.size()];
-        for (int i = 0; i < usuarios.length; i++) {
-            usuarios[i] = this.usuariosConectados.get(i);
-        }
-        
-        return usuarios;
-    }
-
-    public void setUsuariosConectados(String nombreusuario) {
-        this.usuariosConectados.add(nombreusuario);
     }
 }

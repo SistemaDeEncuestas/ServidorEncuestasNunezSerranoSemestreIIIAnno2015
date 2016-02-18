@@ -44,7 +44,7 @@ public class ListasServidor implements Runnable{
             this.listaEncuestas.setListData(nombresEncuestas);
             
             try {
-                Thread.sleep(3000);
+                Thread.sleep(2000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ListasServidor.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -1,14 +1,18 @@
 package util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author adriansb3105
  */
-public class Strings {
+public final class Strings {
 
+    public static List<String> LISTA_USUARIOS_CONECTADOS = new ArrayList<>();
+    
     public final static String TIPO_MULTIPLE = "multiple";
     public final static String TIPO_UNICA = "unica";
     public final static String TIPO_ABIERTA = "abierta";
-    
     public final static String RUTA_ARCHIVOS = "src/files/nombresDeArchivos.xml";
     
     /*Constantes para las peticiones del cliente*/

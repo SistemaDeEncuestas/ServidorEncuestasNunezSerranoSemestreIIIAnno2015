@@ -36,9 +36,7 @@ public class EncuestaBusiness {
     public boolean insertar(Encuesta encuesta){
         try {
             return this.encuestaData.insertar(encuesta);
-        } catch (IOException ex) {
-            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JDOMException ex) {
+        } catch (IOException | JDOMException ex) {
             Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
