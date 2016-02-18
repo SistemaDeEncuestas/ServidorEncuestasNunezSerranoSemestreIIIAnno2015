@@ -1,8 +1,5 @@
 package data;
 
-import business.EncuestaBusiness;
-import business.NombresDeArchivosBusiness;
-import domain.Encuesta;
 import domain.Encuestado;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -154,4 +151,14 @@ public class UsuarioData {
         return false;
     }
     
+    public List<String> getNombresEncuestados(){
+        List<String> lista = new ArrayList<>();
+        
+        Encuestado[] encuestados = getEncuestados();
+        
+        for (int i = 0; i < encuestados.length; i++) {
+            lista.add(encuestados[i].getNickname());
+        }
+        return lista;
+    }
 }

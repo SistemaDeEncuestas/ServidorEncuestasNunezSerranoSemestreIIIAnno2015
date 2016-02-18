@@ -102,14 +102,14 @@ public class PruebaServidor extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public static void main(String args[]) {
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PruebaServidor();
-            }
-        });
-     }
+//    public static void main(String args[]) {
+//
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new PruebaServidor();
+//            }
+//        });
+//     }
 
     public void iniciar(){
         String r1 = "resp 1 - pregunt";

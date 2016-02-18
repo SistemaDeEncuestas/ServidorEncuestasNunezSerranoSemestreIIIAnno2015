@@ -4,7 +4,6 @@ import business.AdministradorBusiness;
 import business.EncuestaBusiness;
 import business.UsuarioBusiness;
 import domain.Administrador;
-import domain.Correo;
 import domain.Encuesta;
 import domain.Encuestado;
 import domain.Pregunta;
@@ -46,8 +45,6 @@ public class Servidor implements Runnable {
     private Encuestado encuestado;
     private Encuesta encuesta;
     private String nombreEncuesta;
-    private List<String> listaEncuestados;
-    private List<Correo> listaCorreos;
     private int puerto;
     private JLabel jlEstado;
     private JTextArea jtaConsola;
@@ -56,7 +53,7 @@ public class Servidor implements Runnable {
     private EncuestaBusiness encuestaBusiness;
     private UsuarioBusiness usuarioBusiness;
     private boolean insertado;
-    private boolean editado;
+    private List<String> listaCorreos;
 
     public Servidor(int puerto) {
         super();
@@ -125,6 +122,7 @@ public class Servidor implements Runnable {
                             enviar.println("insertado");
                         }else{
                             enviar.println("yaExiste");
+                            this.jtaConsola.append("Intento de registro de un administrador fallido\n");
                         }
                         
                         break;
@@ -137,13 +135,9 @@ public class Servidor implements Runnable {
                             enviar.println("insertado");
                         }else{
                             enviar.println("yaExiste");
+                            this.jtaConsola.append("Intento de registro de un encuestado fallido\n");
                         }
                         break;
-                        
-//                    case Strings.PETICION_GET_ENCUESTADOS:
-//                        enviar.writeObject(this.usuarioBusiness.getEncuestados());
-//                        this.jtaConsola.append("Se ha solicitado la lista de los encuestados registrados\n");
-//                        break;
                         
                     case Strings.PETICION_CREAR_ENCUESTA:
                         this.encuesta = recibirEncuesta(recibir.readLine());
@@ -156,6 +150,7 @@ public class Servidor implements Runnable {
                             this.jtaConsola.append("La encuesta '"+this.encuesta.getTitulo()+"' se ha creado con éxito\n");
                         }else{
                             enviar.println("yaExiste");
+                            this.jtaConsola.append("La encuesta '"+this.encuesta.getTitulo()+"' no se pudo ingresar al sistema\n");
                         }
                         break;
                         
@@ -228,6 +223,18 @@ public class Servidor implements Runnable {
 //                            this.jtaConsola.append("La contraseña de "+this.encuestado.getNickname()+" ha sido cambiada\n");
 //                        }
 //                        break;
+                        
+                    case Strings.PETICION_ENVIAR_CORREO:
+                        this.nombreEncuesta = recibir.readLine();
+                        this.listaCorreos = recibirCorreos(recibir.readLine());
+                        EnviaCorreos enviaCorreos = new EnviaCorreos(this.nombreEncuesta, this.listaCorreos);
+                        enviaCorreos.start();
+                        this.jtaConsola.append("La encuesta '"+this.nombreEncuesta+"' ha sido correctamente enviada por correo electrónico\n");
+                        break;
+                        
+                    case Strings.PETICION_LISTAS_USUARIOS:
+                        enviar.println(enviarPeticionListasUsuarios(this.usuarioBusiness.getNombresEncuestados()));
+                        break;
                 }
                 socket.close();
             } while (this.flag);
@@ -372,10 +379,10 @@ public class Servidor implements Runnable {
             SAXBuilder saxBuilder = new SAXBuilder();
             StringReader stringReader = new StringReader(encuestaXML);
             Document doc = saxBuilder.build(stringReader);
-            Element rootAdmin = doc.getRootElement();
+            Element rootEncuesta = doc.getRootElement();
             
             List<Pregunta> listaPreguntas = new ArrayList<>();
-            Element elemPreguntas = rootAdmin.getChild("preguntas");
+            Element elemPreguntas = rootEncuesta.getChild("preguntas");
             List lista = elemPreguntas.getChildren();
             
             for (Object objetoActualPreguntas : lista) {
@@ -408,10 +415,10 @@ public class Servidor implements Runnable {
             
             }
             
-            Encuesta encuesta = new Encuesta(   rootAdmin.getChildText("creador"),
-                                                rootAdmin.getChildText("titulo"),
-                                                rootAdmin.getChildText("descripcion"),
-                                                rootAdmin.getChildText("nombreArchivo"),
+            Encuesta encuesta = new Encuesta(   rootEncuesta.getChildText("creador"),
+                                                rootEncuesta.getChildText("titulo"),
+                                                rootEncuesta.getChildText("descripcion"),
+                                                rootEncuesta.getChildText("nombreArchivo"),
                                                 listaPreguntas);
         
         return encuesta;
@@ -421,5 +428,46 @@ public class Servidor implements Runnable {
         }
         return null;
     }
+
+    private String enviarPeticionListasUsuarios(List<String> nombresEncuestados) {
+        
+        Element elemNombres = new Element("nombresEncuestados");
+        
+        for (int i = 0; i < nombresEncuestados.size(); i++) {
+            Element elemNombre = new Element("nombre");
+            elemNombre.addContent(nombresEncuestados.get(i));
+            elemNombres.addContent(elemNombre);
+        }
+
+        XMLOutputter output = new XMLOutputter(Format.getCompactFormat());
+        String nombresXML = output.outputString(elemNombres);
+
+        nombresXML = nombresXML.replace("\n", "");
+        
+        return nombresXML;
+    }
     
+    private List<String> recibirCorreos(String correosXML) {
+        
+        try {
+            SAXBuilder saxBuilder = new SAXBuilder();
+            StringReader stringReader = new StringReader(correosXML);
+            Document doc = saxBuilder.build(stringReader);
+            Element rootCorreos = doc.getRootElement();
+            
+            List<String> listaCorreos = new ArrayList<>();
+            List lista = rootCorreos.getChildren();
+            
+            for (Object objetoActual : lista) {
+                Element elemActual = (Element) objetoActual;
+                listaCorreos.add(elemActual.getValue());
+            }
+            
+            return listaCorreos;
+        } catch (JDOMException | IOException ex) {
+            Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
 }

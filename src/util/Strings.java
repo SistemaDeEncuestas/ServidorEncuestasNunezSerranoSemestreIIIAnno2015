@@ -8,6 +8,7 @@ import java.util.List;
  */
 public final class Strings {
 
+    public final static int PUERTO = 5700;
     public static List<String> LISTA_USUARIOS_CONECTADOS = new ArrayList<>();
     
     public final static String TIPO_MULTIPLE = "multiple";
@@ -16,6 +17,7 @@ public final class Strings {
     public final static String RUTA_ARCHIVOS = "src/files/nombresDeArchivos.xml";
     
     /*Constantes para las peticiones del cliente*/
+    public final static String PETICION_LISTAS_USUARIOS = "listasUsuarios";
     public final static String PETICION_LOGIN_ADMIN = "loginAdministrador";
     public final static String PETICION_LOGIN_USER = "loginEncuestado";
     public final static String PETICION_REGISTRA_ADMIN = "registrarAdministrador";

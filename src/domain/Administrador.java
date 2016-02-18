@@ -23,7 +23,7 @@ public class Administrador extends Usuario {
         this.encuestasCreadas = new ArrayList<>();
         this.primeraVez = true;
     }
-    
+
     public List<String> getEncuestasCreadas() {
         return encuestasCreadas;
     }

@@ -3,7 +3,6 @@ package business;
 import data.UsuarioData;
 import domain.Encuestado;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,10 +14,8 @@ import org.jdom.JDOMException;
 public class UsuarioBusiness {
 
     private UsuarioData userData;
-//    private List<String> usuariosConectados;
 
     public UsuarioBusiness() {
-//        this.usuariosConectados = new ArrayList<>();
         try {
             this.userData = new UsuarioData();
         } catch (JDOMException | IOException ex) {
@@ -78,5 +75,9 @@ public class UsuarioBusiness {
             Logger.getLogger(UsuarioBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+    
+    public List<String> getNombresEncuestados(){
+        return this.userData.getNombresEncuestados();
     }
 }
