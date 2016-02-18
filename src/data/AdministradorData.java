@@ -135,12 +135,10 @@ public class AdministradorData {
             
             adminActual.setEncuestasCreadas(listaNombresEncuestas);
             
-            String primeraVez = (elementoActual.getChild("primeraVez").getValue());
-            if (primeraVez.equals("true")) {
-                adminActual.setPrimeraVez(true);
-            } else {
-                adminActual.setPrimeraVez(false);
-            }
+            boolean primeraVez = Boolean.parseBoolean((elementoActual.getChild("primeraVez").getValue()));
+          
+            adminActual.setPrimeraVez(primeraVez);
+         
  
             administradores[contador++] = adminActual;
         }
