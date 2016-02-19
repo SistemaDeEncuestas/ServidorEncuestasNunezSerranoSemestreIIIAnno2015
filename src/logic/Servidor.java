@@ -53,7 +53,7 @@ public class Servidor implements Runnable {
     private EncuestaBusiness encuestaBusiness;
     private UsuarioBusiness usuarioBusiness;
     private boolean insertado;
-    private List<String> listaCorreos;
+    private List<String> lista;
 
     public Servidor(int puerto) {
         super();
@@ -83,7 +83,7 @@ public class Servidor implements Runnable {
                 BufferedReader recibir = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
                 this.peticion = recibir.readLine();
-
+                System.out.println("peticion: "+peticion);
                 switch (this.peticion) {
                     case Strings.PETICION_LOGIN_ADMIN:
                         this.nick = recibir.readLine();
@@ -153,6 +153,18 @@ public class Servidor implements Runnable {
                             this.jtaConsola.append("La encuesta '"+this.encuesta.getTitulo()+"' no se pudo ingresar al sistema\n");
                         }
                         break;
+                        
+                    case Strings.PETICION_NOMBRES_POR_ENCUESTA:
+                        this.nick = recibir.readLine();//nick
+                        this.nombreEncuesta = recibir.readLine();//nombre encuesta
+                        this.lista = new ArrayList<>();
+                        lista.add("a");
+                        lista.add("b");        
+                        lista.add("c");        
+                        enviar.println(enviarLista(this.lista));
+                        break;
+                        
+                        
                         
 //                    case Strings.PETICION_EDITA_ENCUESTA:
 //                        this.nombreEncuesta = recibir.readUTF();
@@ -226,14 +238,14 @@ public class Servidor implements Runnable {
                         
                     case Strings.PETICION_ENVIAR_CORREO:
                         this.nombreEncuesta = recibir.readLine();
-                        this.listaCorreos = recibirCorreos(recibir.readLine());
-                        EnviaCorreos enviaCorreos = new EnviaCorreos(this.nombreEncuesta, this.listaCorreos);
+                        this.lista = recibirCorreos(recibir.readLine());
+                        EnviaCorreos enviaCorreos = new EnviaCorreos(this.nombreEncuesta, this.lista);
                         enviaCorreos.start();
                         this.jtaConsola.append("La encuesta '"+this.nombreEncuesta+"' ha sido correctamente enviada por correo electrónico\n");
                         break;
                         
                     case Strings.PETICION_LISTAS_USUARIOS:
-                        enviar.println(enviarPeticionListasUsuarios(this.usuarioBusiness.getNombresEncuestados()));
+                        enviar.println(enviarLista(this.usuarioBusiness.getNombresEncuestados()));
                         break;
                 }
                 socket.close();
@@ -429,13 +441,13 @@ public class Servidor implements Runnable {
         return null;
     }
 
-    private String enviarPeticionListasUsuarios(List<String> nombresEncuestados) {
+    private String enviarLista(List<String> lista) {
         
-        Element elemNombres = new Element("nombresEncuestados");
+        Element elemNombres = new Element("nombres");
         
-        for (int i = 0; i < nombresEncuestados.size(); i++) {
+        for (int i = 0; i < lista.size(); i++) {
             Element elemNombre = new Element("nombre");
-            elemNombre.addContent(nombresEncuestados.get(i));
+            elemNombre.addContent(lista.get(i));
             elemNombres.addContent(elemNombre);
         }
 

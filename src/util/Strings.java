@@ -31,4 +31,5 @@ public final class Strings {
     public final static String PETICION_ENVIAR_CORREO = "enviarCorreo";
     public final static String PETICION_CAMBIAR_CONTRASENNA_ADMIN = "cambiarContrasennaAdministrador";
     public final static String PETICION_CAMBIAR_CONTRASENNA_ENCUESTADO = "cambiarContrasennaEncuestado";
+    public final static String PETICION_NOMBRES_POR_ENCUESTA = "nombresPorEncuesta";
 }
