@@ -14,6 +14,7 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 
 /**
+ * Clase que me permite manejar archivos xml para los objetos tipo encuestado
  *
  * @author Daniel
  */
@@ -40,11 +41,23 @@ public class UsuarioData {
         }
     }
 
+    /**
+     * Metodo que me permite guardar el archivo en formato xml.
+     *
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public void guardarXML() throws FileNotFoundException, IOException {
         XMLOutputter xmlOutputter = new XMLOutputter();
         xmlOutputter.output(this.documento, new PrintWriter(this.rutaArchivo));
     }
 
+    /**
+     * Metodo que me permite ingresar un objeto tipo Encuesteado
+     *
+     * @param encuestado
+     * @throws IOException
+     */
     public void insertar(Encuestado encuestado) throws IOException {
 
         Element eEncuestado = new Element("encuestado");
@@ -75,6 +88,12 @@ public class UsuarioData {
 
     }
 
+    /**
+     * Metodo que me devuelve un arreglo con la cantidad de usuarios encuestados
+     * que existen en el pdf
+     *
+     * @return el arreglo de encuestados
+     */
     public Encuestado[] getEncuestados() {
 
         int cantidadEncuestados = this.raiz.getContentSize();
@@ -108,6 +127,14 @@ public class UsuarioData {
         return encuestados;
     }
 
+    /**
+     * Metodo que, apartir de el arreglo con el total de encuestados en el
+     * archivo, me busca y devuelve el usuario encuestado cuyo nickname coincida
+     * con el que pasa por parámetro
+     *
+     * @param nickname : String
+     * @return el encuestado encontrado
+     */
     public Encuestado getEncuestado(String nickname) {
 
         Encuestado[] encuestados = getEncuestados();
@@ -122,6 +149,16 @@ public class UsuarioData {
         return null;
     }
 
+    /**
+     * Metodo que, apartir del arreglo con el total de encuestados en el
+     * archivo, me busca y elimina el usuario encuestado cuyo nickname coincida
+     * con el que pasa por parámetro
+     *
+     * @param nickname
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public boolean eliminaEncuestado(String nickname) throws FileNotFoundException, IOException {
 
         List listaElementos = this.raiz.getChildren();
@@ -139,50 +176,39 @@ public class UsuarioData {
         }
         return false;
     }
-   
-    
-    public boolean editaEncuestado(Encuestado encuestado) throws IOException{
-        
+
+    /**
+     * Metodo que permite editar un objeto tipo encuestado
+     *
+     * @param encuestado el objeto a editar
+     * @return boolean, true si se pudo editar, false para el caso contrario
+     * @throws IOException
+     */
+    public boolean editaEncuestado(Encuestado encuestado) throws IOException {
+
         boolean eliminado = eliminaEncuestado(encuestado.getNickname());
-        if(eliminado){
+        if (eliminado) {
             insertar(encuestado);
             return true;
         }
         return false;
     }
-    
-    public List<String> getNombresEncuestados(){
+
+    /**
+     * Metodo que, apartir del arreglo con el total de encuestados en el
+     * archivo, me busca y devuelve la lista de nombres de usuarios encuestados.
+     *
+     * @return
+     */
+    public List<String> getNombresEncuestados() {
         List<String> lista = new ArrayList<>();
-        
+
         Encuestado[] encuestados = getEncuestados();
-        
+
         for (int i = 0; i < encuestados.length; i++) {
             lista.add(encuestados[i].getNickname());
         }
         return lista;
     }
-    
-    public void eliminarEncuestaEnUsuario(String nombreEncuesta){
-//        List lista = this.raiz.getChildren();
-//        System.out.println("num encuestados: "+lista.size());
-//        for (Object objetoActual : lista) {
-//            
-//            Element elementoActual = (Element) objetoActual;
-//            List encuestas = elementoActual.getChild("encuestas").getChildren();
-//            
-//            System.out.println(elementoActual.getChild("encuestas").getValue());
-//            
-//            System.out.println("tam de encuestas "+encuestas.size());
-//            
-//            for (Object objetoEncuesta : encuestas) {
-//                Element encuestaActual = (Element) objetoEncuesta;
-//                
-//                
-//                if (encuestaActual.getValue().equals(nombreEncuesta)) {
-//                    elementoActual.getChild("encuestas").removeContent(encuestaActual);
-//                    encuestaActual.removeContent();
-//                }
-//            }
-//        }
-    }
+
 }

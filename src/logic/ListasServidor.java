@@ -7,6 +7,9 @@ import java.util.logging.Logger;
 import javax.swing.JList;
 
 /**
+ * Clase que permite llevar un control de los administradores y encuestas
+ * creadas en el sistema
+ *
  * @author adriansb3105
  */
 public class ListasServidor implements Runnable {
@@ -36,6 +39,10 @@ public class ListasServidor implements Runnable {
         }
     }
 
+    /**
+     * Metodo que atraves del hilo me actualiza la lista de administradores y la
+     * encuestas creadas cada cinco seguntos
+     */
     private void iniciar() {
         this.administradorBusiness = new AdministradorBusiness();
         this.nombresDeArchivosBusiness = new NombresDeArchivosBusiness();

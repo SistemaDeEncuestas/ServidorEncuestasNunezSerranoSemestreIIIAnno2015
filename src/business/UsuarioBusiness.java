@@ -58,7 +58,7 @@ public class UsuarioBusiness {
         }
         return null;
     }
-    
+
     public Encuestado getEncuestado(String nickname) {
 
         if (this.userData.getEncuestado(nickname) != null) {
@@ -84,12 +84,9 @@ public class UsuarioBusiness {
         }
         return false;
     }
-    
-    public List<String> getNombresEncuestados(){
+
+    public List<String> getNombresEncuestados() {
         return this.userData.getNombresEncuestados();
     }
-    
-    public void eliminarEncuestaEnUsuario(String nombreEncuesta){
-        this.userData.eliminarEncuestaEnUsuario(nombreEncuesta);
-    }
+
 }

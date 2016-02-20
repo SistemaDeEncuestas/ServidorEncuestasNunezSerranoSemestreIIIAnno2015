@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Clase que contiene algunas constantes tipo String para el control de acciones
+ * en el programa
+ *
  * @author adriansb3105
+ * @author Daniel
  */
 public final class Strings {
 

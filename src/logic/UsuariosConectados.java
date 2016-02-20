@@ -8,6 +8,7 @@ import javax.swing.JList;
 import util.Strings;
 
 /**
+ * Clase que me editalas listas de usuarios conectados en el servidor
  * @author adriansb3105
  */
 public class UsuariosConectados implements Runnable{

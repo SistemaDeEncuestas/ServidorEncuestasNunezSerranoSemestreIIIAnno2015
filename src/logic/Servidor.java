@@ -34,6 +34,7 @@ import org.jdom.output.XMLOutputter;
 import util.Strings;
 
 /**
+ * Servidor del sistema
  *
  * @author adriansb3105
  */
@@ -59,6 +60,10 @@ public class Servidor implements Runnable {
     private List<String> lista;
     private String parte;
 
+    /**
+     *
+     * @param puerto
+     */
     public Servidor(int puerto) {
         super();
         this.puerto = puerto;
@@ -89,7 +94,9 @@ public class Servidor implements Runnable {
                 this.administradorBusiness = new AdministradorBusiness();
                 this.usuarioBusiness = new UsuarioBusiness();
                 this.encuestaBusiness = new EncuestaBusiness();
-
+                /*De acuerdo a la peticion que el servidor
+                 recibe del cliente, el server se comporta de manera diferente
+                 respondiendo a las peticiones del cliente*/
                 switch (this.peticion) {
                     case Strings.PETICION_LOGIN_ADMIN:
                         this.nick = recibir.readLine();
@@ -184,21 +191,21 @@ public class Servidor implements Runnable {
                             this.jtaConsola.append("La solicitud de eliminar una encuesta ha fallado\n");
                         }
                         break;
-                        
+
                     case Strings.PETICION_GUARDA_EDICION:
                         this.encuesta = recibirEncuesta(recibir.readLine());
                         this.encuestaBusiness.iniciar(this.encuesta.getNombreArchivo());
-                        
+
                         this.editado = this.encuestaBusiness.editarEncuesta(this.encuesta);
                         if (this.editado) {
                             enviar.println("listo");
-                            this.jtaConsola.append("La encuesta "+this.encuesta.getTitulo()+" se ha editado con éxito\n");
-                        }else{
+                            this.jtaConsola.append("La encuesta " + this.encuesta.getTitulo() + " se ha editado con éxito\n");
+                        } else {
                             enviar.println("noSePudoEditar");
-                            this.jtaConsola.append("Ha fallado la edición de la encuesta '"+this.encuesta.getTitulo()+"'\n");
+                            this.jtaConsola.append("Ha fallado la edición de la encuesta '" + this.encuesta.getTitulo() + "'\n");
                         }
                         break;
-                        
+
                     /*admin*/
                     case Strings.PETICION_ENVIAR_ENCUESTA:
                         this.nombre = recibir.readLine();
@@ -212,7 +219,7 @@ public class Servidor implements Runnable {
                         this.jtaConsola.append("La encuesta '" + this.nombre + "' ha sido enviada a los usuarios: " + this.lista + "\n");
                         enviar.println("listo");
                         break;
-                        
+
                     case Strings.PETICION_SOLICITA_ENCUESTA:
                         this.nombre = recibir.readLine();
                         this.encuestaBusiness.iniciar(this.nombre);
@@ -220,12 +227,12 @@ public class Servidor implements Runnable {
                             this.encuesta = this.encuestaBusiness.getEncuesta();
                             enviar.println(enviarEncuesta(this.encuesta));
                             this.jtaConsola.append("La encuesta '" + this.nombre + "' ha sido solicitada para ser llenada\n");
-                        }else{
+                        } else {
                             enviar.println("null");
                             this.jtaConsola.append("La encuesta '" + this.nombre + "' no existe\n");
                         }
                         break;
-                        
+
                     case Strings.PETICION_DEVOLVER_ENCUESTA:
                         this.encuesta = recibirEncuesta(recibir.readLine());
 //                        this.usuarioBusiness.eliminarEncuestaEnUsuario(this.encuesta.getNombreArchivo());
@@ -233,36 +240,36 @@ public class Servidor implements Runnable {
                         if (this.insertado) {
                             enviar.println("listo");
                             this.jtaConsola.append("La respuesta de la encuesta '" + this.nombre + "' ha sido guardada con éxito\n");
-                        }else{
+                        } else {
                             enviar.println("noSePudoInsertar");
                             this.jtaConsola.append("No se ha podido guardar la encuesta '" + this.nombre + "'\n");
                         }
                         break;
-                        
+
                     case Strings.PETICION_CAMBIAR_CONTRASENNA_ADMIN:
                         this.administrador = recibirAdministrador(recibir.readLine());
                         this.editado = this.administradorBusiness.editaAdministrador(this.administrador);
                         if (this.editado) {
                             enviar.println("listo");
-                            this.jtaConsola.append("La contraseña de "+this.administrador.getNickname()+" ha sido cambiada\n");
-                        }else{
+                            this.jtaConsola.append("La contraseña de " + this.administrador.getNickname() + " ha sido cambiada\n");
+                        } else {
                             enviar.println("noSePudoEditar");
-                            this.jtaConsola.append("No se pudo cambiar la contraseña de "+this.administrador.getNickname()+"\n");
+                            this.jtaConsola.append("No se pudo cambiar la contraseña de " + this.administrador.getNickname() + "\n");
                         }
                         break;
-                        
+
                     case Strings.PETICION_CAMBIAR_CONTRASENNA_ENCUESTADO:
                         this.encuestado = recibirEncuestado(recibir.readLine());
                         this.editado = this.usuarioBusiness.editaEncuestado(this.encuestado);
                         if (this.editado) {
                             enviar.println("listo");
-                            this.jtaConsola.append("La contraseña de "+this.encuestado.getNickname()+" ha sido cambiada\n");
-                        }else{
+                            this.jtaConsola.append("La contraseña de " + this.encuestado.getNickname() + " ha sido cambiada\n");
+                        } else {
                             enviar.println("noSePudoEditar");
-                            this.jtaConsola.append("No se pudo cambiar la contraseña de "+this.encuestado.getNickname()+"\n");
+                            this.jtaConsola.append("No se pudo cambiar la contraseña de " + this.encuestado.getNickname() + "\n");
                         }
                         break;
-                        
+
                     case Strings.PETICION_ENVIAR_CORREO:
                         this.nombre = recibir.readLine();
                         this.lista = recibirLista(recibir.readLine());
@@ -271,7 +278,7 @@ public class Servidor implements Runnable {
                         enviar.println("listo");
                         this.jtaConsola.append("La encuesta '" + this.nombre + "' ha sido correctamente enviada por correo electrónico\n");
                         break;
-                        
+
                     case Strings.PETICION_CERRAR_SESION:
                         this.nombre = recibir.readLine();
                         Strings.LISTA_USUARIOS_CONECTADOS.remove(this.nombre);
@@ -281,7 +288,7 @@ public class Servidor implements Runnable {
                     case Strings.PETICION_LISTAS_USUARIOS:
                         enviar.println(enviarLista(this.usuarioBusiness.getNombresEncuestados()));
                         break;
-                        
+
                     case Strings.PETICION_PREGUNTAS_ESTADISTICA:
                         this.nombre = recibir.readLine();
                         this.parte = recibir.readLine();
@@ -297,6 +304,13 @@ public class Servidor implements Runnable {
         }
     }
 
+    /**
+     * Metodo que me transforma un objeto tipo administrador en un String con
+     * formato xml para enviar al server
+     *
+     * @param admin el objeto a convertir
+     * @return el string a enviar
+     */
     private String enviarAdministrador(Administrador admin) {
         Element elemAdmin = new Element("administrador");
         elemAdmin.setAttribute("nickname", admin.getNickname());
@@ -335,6 +349,13 @@ public class Servidor implements Runnable {
         return adminXML;
     }
 
+    /**
+     * Metodo que me transforma un objeto tipo encuestado en un String con
+     * formato xml para enviar al server
+     *
+     * @param encuestado el objeto a convertir
+     * @return el string a enviar
+     */
     private String enviarEncuestado(Encuestado encuestado) {
 
         Element elemEncuestado = new Element("encuestado");
@@ -370,6 +391,13 @@ public class Servidor implements Runnable {
         return userXML;
     }
 
+    /**
+     * Metodo que me transforma una lista en un String con formato xml para
+     * enviar al server
+     *
+     * @param lista la lista convertir
+     * @return el String a enviar
+     */
     private String enviarLista(List<String> lista) {
 
         Element elemNombres = new Element("nombres");
@@ -387,7 +415,14 @@ public class Servidor implements Runnable {
 
         return nombresXML;
     }
-    
+
+    /**
+     * Metodo que me transforma un objeto tipo encuesta en un String con formato
+     * xml para enviar al server
+     *
+     * @param encuesta el objeto a convertir
+     * @return el string a a enviar
+     */
     private String enviarEncuesta(Encuesta encuesta) {
         Element elemEncuesta = new Element("encuesta");
         Element elemCreador = new Element("creador");
@@ -436,7 +471,13 @@ public class Servidor implements Runnable {
 
         return encuestaXML;
     }
-    
+
+    /**
+     * Método que a partir de un String con formato XML me obtiene una lista
+     *
+     * @param listaString
+     * @return la lista que se genera del string
+     */
     private List<String> recibirLista(String listaString) {
 
         List<String> nombres = new ArrayList<>();
@@ -461,7 +502,14 @@ public class Servidor implements Runnable {
         }
         return null;
     }
-    
+
+    /**
+     * Método que a partir de un String con formato XML me obtiene un objeto
+     * tipo encuestado.
+     *
+     * @param userXML el String con formato XML.
+     * @return el objeto encuestado que se genera.
+     */
     private Encuestado recibirEncuestado(String userXML) {
         try {
             SAXBuilder saxBuilder = new SAXBuilder();
@@ -488,7 +536,14 @@ public class Servidor implements Runnable {
         }
         return null;
     }
-    
+
+    /**
+     * Método que a partir de un String con formato XML me obtiene un objeto
+     * tipo encuesta.
+     *
+     * @param encuestaXML el String con formato XML.
+     * @return El objeto encuesta que se forma.
+     */
     private Encuesta recibirEncuesta(String encuestaXML) {
 
         try {
@@ -544,7 +599,14 @@ public class Servidor implements Runnable {
         }
         return null;
     }
-    
+
+    /**
+     * Método que a partir de un String con formato XML me obtiene un objeto
+     * tipo administrador.
+     *
+     * @param adminXML el String con formato XML.
+     * @return el objeto admnistrador que se genera.
+     */
     private Administrador recibirAdministrador(String adminXML) {
         try {
             SAXBuilder saxBuilder = new SAXBuilder();
@@ -573,5 +635,5 @@ public class Servidor implements Runnable {
         }
         return null;
     }
-    
+
 }

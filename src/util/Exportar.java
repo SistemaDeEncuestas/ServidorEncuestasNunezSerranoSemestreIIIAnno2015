@@ -23,6 +23,12 @@ public class Exportar {
     public Exportar() {
     }
     
+    /**
+     * Metodo que me permite crear un archivo en formato pdf a partir de un
+     * objeto encuesta
+     * @param encuesta la encuesta a ser convertida
+     * @return true si logró exportar la encuesta, false para el caso contrario
+     */
     public boolean exportarAPDF(Encuesta encuesta) {
 
         try {

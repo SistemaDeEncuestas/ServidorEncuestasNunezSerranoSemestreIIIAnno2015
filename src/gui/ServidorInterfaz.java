@@ -23,6 +23,7 @@ import logic.UsuariosConectados;
 import logic.ListasServidor;
 
 /**
+ * Iterfaz grafica para el control de interacciones entre el servidor y los clientes
  * @author adriansb3105
  */
 public class ServidorInterfaz extends JFrame implements ActionListener{
