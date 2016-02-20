@@ -22,6 +22,19 @@ public class UsuariosConectados implements Runnable{
     public void run() {
         
         while(true){
+        
+            iniciar();
+            
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(UsuariosConectados.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }
+
+    private void iniciar() {
         List<String> usuariosLista = Strings.LISTA_USUARIOS_CONECTADOS;
         String[] usuarios = new String[usuariosLista.size()+1];
         
@@ -33,14 +46,6 @@ public class UsuariosConectados implements Runnable{
         
         
         this.listaUsuariosConectados.setListData(usuarios);
-            
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(UsuariosConectados.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        
     }
     
 }

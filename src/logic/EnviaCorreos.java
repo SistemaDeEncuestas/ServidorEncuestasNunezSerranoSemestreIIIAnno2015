@@ -1,5 +1,7 @@
 package logic;
 
+import business.EncuestaBusiness;
+import domain.Encuesta;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -15,6 +17,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import util.Exportar;
 
 /**
  * @author adriansb3105
@@ -23,15 +26,31 @@ public class EnviaCorreos extends Thread{
 
     List<String> listaCorreos;
     private String nombreEncuesta;
+    private EncuestaBusiness encuestaBusiness;
+    private Encuesta encuesta;
     
     public EnviaCorreos(String nombreEncuesta, List<String> listaCorreos) {
         super();
+        this.encuestaBusiness = new EncuestaBusiness();
         this.nombreEncuesta = nombreEncuesta;
         this.listaCorreos = listaCorreos;
     }
 
     @Override
     public void run() {
+        
+        this.encuestaBusiness.iniciar(this.nombreEncuesta);
+        this.encuesta = this.encuestaBusiness.getEncuesta();
+        
+        Exportar exportar = new Exportar();
+        exportar.exportarAPDF(encuesta);
+        
+        try {
+            sleep(3000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(EnviaCorreos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         enviarCorreo();
     }
     
@@ -60,7 +79,7 @@ public class EnviaCorreos extends Thread{
             texto.setText("Mensaje automatico: Se le solicita que llene la encuesta adjunta");
 
             BodyPart adjunto = new MimeBodyPart();
-            adjunto.setDataHandler(new DataHandler(new FileDataSource("src/files/emailSent/grafico.jpg")));
+            adjunto.setDataHandler(new DataHandler(new FileDataSource("src/files/emailSent/"+this.encuesta.getNombreArchivo() + ".pdf")));
             adjunto.setFileName(this.nombreEncuesta);
 
             MimeMultipart m = new MimeMultipart();

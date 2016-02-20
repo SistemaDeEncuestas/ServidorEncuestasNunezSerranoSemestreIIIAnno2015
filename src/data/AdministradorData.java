@@ -29,7 +29,7 @@ public class AdministradorData {
     private String rutaArchivo;
 
     public AdministradorData() throws JDOMException, IOException {
-        this.encuestaData = new EncuestaData();
+//        this.encuestaData = new EncuestaData();
         this.rutaArchivo = "src/files/administradores.xml";
         File archivo = new File(this.rutaArchivo);
 
@@ -124,22 +124,22 @@ public class AdministradorData {
                     elementoActual.getChild("correo").getValue());
 
 //            adminActual.setEncuestasCreadas(this.encuestaData.getNombresDeEncuestasPorAdmin(elementoActual.getAttributeValue("nickname")));
-            
+            this.encuestaData = new EncuestaData();
             Encuesta[] aux = this.encuestaData.getEncuestasPorAdmin(elementoActual.getAttributeValue("nickname"));
             
             for (int i = 0; i < aux.length; i++) {
                 listaNombresEncuestas.add(aux[i].getNombreArchivo());
             }
             
-//            System.out.println("lista: "+listaNombresEncuestas);
-            
             adminActual.setEncuestasCreadas(listaNombresEncuestas);
             
-            boolean primeraVez = Boolean.parseBoolean((elementoActual.getChild("primeraVez").getValue()));
-          
+            
+            
+            String primeraVez = elementoActual.getChild("primeraVez").getValue();
+            
+            
             adminActual.setPrimeraVez(primeraVez);
          
- 
             administradores[contador++] = adminActual;
         }
 

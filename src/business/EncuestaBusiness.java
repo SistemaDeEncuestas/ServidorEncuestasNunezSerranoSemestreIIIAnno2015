@@ -33,6 +33,16 @@ public class EncuestaBusiness {
         }
     }
     
+    public void iniciarEncuestaRespondida(String rutaArchivo){
+        try {
+            this.encuestaData.iniciarEncuestaRespondida(rutaArchivo);
+        } catch (JDOMException ex) {
+            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public boolean insertar(Encuesta encuesta){
         try {
             return this.encuestaData.insertar(encuesta);
@@ -55,6 +65,17 @@ public class EncuestaBusiness {
         try {
             return this.encuestaData.getEncuesta();
         } catch (JDOMException | IOException ex) {
+            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public List<String> getPreguntasPorEncuesta(String nombreEncuesta){
+        try {
+            return this.encuestaData.getPreguntasPorEncuesta(nombreEncuesta);
+        } catch (JDOMException ex) {
+            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -112,4 +133,6 @@ public class EncuestaBusiness {
         }
         return false;
     }
+    
+    
 }

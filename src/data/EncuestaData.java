@@ -3,8 +3,6 @@
  */
 package data;
 
-import business.AdministradorBusiness;
-import business.NombresDeArchivosBusiness;
 import domain.Encuesta;
 import domain.Pregunta;
 import java.io.File;
@@ -26,7 +24,7 @@ import org.jdom.output.XMLOutputter;
 public class EncuestaData {
 
     private NombresDeArchivosData nombresDeArchivosData;
-//    private AdministradorData administradorData;
+
     private Document documento;
     private Element raiz;
     private String rutaArchivo;
@@ -53,7 +51,25 @@ public class EncuestaData {
             guardarXML();
         }
     }
+    
+    public void iniciarEncuestaRespondida(String rutaArchivo) throws JDOMException, IOException{
+        this.nombreArchivo = rutaArchivo;
+        this.rutaArchivo = "src/files/respondidas/" + rutaArchivo + ".xml";
+        File archivo = new File(this.rutaArchivo);
 
+        if (archivo.exists()) {
+            SAXBuilder saxBuilder = new SAXBuilder();
+            saxBuilder.setIgnoringElementContentWhitespace(true);
+            this.documento = saxBuilder.build(this.rutaArchivo);
+            this.raiz = this.documento.getRootElement();
+        } else {
+            this.raiz = new Element(rutaArchivo);
+            this.documento = new Document(this.raiz);
+
+            guardarXML();
+        }
+    }
+    
     public void guardarXML() throws FileNotFoundException, IOException {
         XMLOutputter xmlOutputter = new XMLOutputter();
         xmlOutputter.output(this.documento, new PrintWriter(this.rutaArchivo));
@@ -120,7 +136,6 @@ public class EncuestaData {
             String aux = "src/files/" + nombresDeArchivos.get(i) + ".xml";
 
             getEncuestaPorArchivoData.iniciar(aux);
-
             Encuesta encuesta = getEncuestaPorArchivoData.getEncuesta();
 
             listaEncuestas[i] = encuesta;
@@ -141,6 +156,19 @@ public class EncuestaData {
         return encuesta;
     }
 
+    public List<String> getPreguntasPorEncuesta(String nombreEncuesta) throws JDOMException, IOException{
+        
+        List<String> lista = new ArrayList<>();
+        
+        Encuesta encuesta = getEncuesta();
+        
+        for (int i = 0; i < encuesta.getPreguntas().size(); i++) {
+            lista.add(encuesta.getPreguntas().get(i).getEnunciado());
+        }
+        
+        return lista;
+    }
+    
     public Encuesta[] getEncuestasPorAdmin(String nickname) throws IOException, JDOMException {
         
         Encuesta[] todasLasEncuestas = getTodasLasEncuestas();

@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<encuesta_3><creador>a</creador><titulo>encuesta 3</titulo><descripcion>hoda</descripcion><nombreArchivo>encuesta_3</nombreArchivo><preguntas><pregunta tipo="unica" enunciado="a"><respuesta>s</respuesta><respuesta>d</respuesta><respuesta>f</respuesta></pregunta><pregunta tipo="abierta" enunciado="aaa" /></preguntas></encuesta_3>

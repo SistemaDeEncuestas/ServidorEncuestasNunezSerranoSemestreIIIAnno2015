@@ -44,7 +44,7 @@ public class Servidor implements Runnable {
     private Administrador administrador;
     private Encuestado encuestado;
     private Encuesta encuesta;
-    private String nombreEncuesta;
+    private String nombre;
     private int puerto;
     private JLabel jlEstado;
     private JTextArea jtaConsola;
@@ -53,15 +53,13 @@ public class Servidor implements Runnable {
     private EncuestaBusiness encuestaBusiness;
     private UsuarioBusiness usuarioBusiness;
     private boolean insertado;
+    private boolean editado;
     private List<String> lista;
 
     public Servidor(int puerto) {
         super();
         this.puerto = puerto;
         this.flag = true;
-        this.encuestaBusiness = new EncuestaBusiness();
-        this.usuarioBusiness = new UsuarioBusiness();
-        this.administradorBusiness = new AdministradorBusiness();
     }
 
     public void correHilo(JLabel jlEstado, JTextArea jtaConsola) {
@@ -83,7 +81,11 @@ public class Servidor implements Runnable {
                 BufferedReader recibir = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
                 this.peticion = recibir.readLine();
-                System.out.println("peticion: "+peticion);
+
+                this.administradorBusiness = new AdministradorBusiness();
+                this.usuarioBusiness = new UsuarioBusiness();
+                this.encuestaBusiness = new EncuestaBusiness();
+
                 switch (this.peticion) {
                     case Strings.PETICION_LOGIN_ADMIN:
                         this.nick = recibir.readLine();
@@ -94,156 +96,187 @@ public class Servidor implements Runnable {
                             this.jtaConsola.append("Intento de inicio de sesion de un administrador fallido\n");
                         } else {
                             this.administrador = this.administradorBusiness.getAdministrador(this.nick, this.contrasenna);
-                            enviar.println(enviarPeticionLoginAdmin(this.administrador));
-                            this.jtaConsola.append(this.nick + " ha iniciado sesión\n");
+                            enviar.println(enviarAdministrador(this.administrador));
+                            this.jtaConsola.append("El administrador " + this.nick + " ha iniciado sesión\n");
                         }
                         break;
 
                     case Strings.PETICION_LOGIN_USER:
                         this.nick = recibir.readLine();
                         this.contrasenna = recibir.readLine();
-                        
                         if (this.usuarioBusiness.getEncuestado(this.nick, this.contrasenna) == null) {
                             enviar.println("null");
                             this.jtaConsola.append("Intento de inicio de sesion de un encuestado fallido\n");
-                        }else{
+                        } else {
                             this.encuestado = this.usuarioBusiness.getEncuestado(this.nick, this.contrasenna);
-                            enviar.println(enviarPeticionLoginUser(this.encuestado));
+                            enviar.println(enviarEncuestado(this.encuestado));
                             Strings.LISTA_USUARIOS_CONECTADOS.add(this.nick);
-                            this.jtaConsola.append(this.nick + " ha iniciado sesión\n");
+                            this.jtaConsola.append("El usuario " + this.nick + " ha iniciado sesión\n");
                         }
                         break;
-                        
+
                     case Strings.PETICION_REGISTRA_ADMIN:
-                        this.administrador = recibirRegistraAdmin(recibir.readLine());
+                        this.administrador = recibirAdministrador(recibir.readLine());
                         this.insertado = this.administradorBusiness.insertar(this.administrador);
                         if (this.insertado) {
-                            this.jtaConsola.append("El administrador "+this.administrador.getNickname()+" se ha registrado con éxito\n");
+                            this.jtaConsola.append("El administrador " + this.administrador.getNickname() + " se ha registrado con éxito\n");
                             enviar.println("insertado");
-                        }else{
+                        } else {
                             enviar.println("yaExiste");
                             this.jtaConsola.append("Intento de registro de un administrador fallido\n");
                         }
-                        
                         break;
-                        
+
                     case Strings.PETICION_REGISTRAR_USER:
-                        this.encuestado = recibirRegistraUser(recibir.readLine());
+                        this.encuestado = recibirEncuestado(recibir.readLine());
                         this.insertado = this.usuarioBusiness.insertar(this.encuestado);
                         if (this.insertado) {
-                            this.jtaConsola.append("El encuestado "+this.encuestado.getNickname()+" se ha registrado con éxito\n");
+                            this.jtaConsola.append("El encuestado " + this.encuestado.getNickname() + " se ha registrado con éxito\n");
                             enviar.println("insertado");
-                        }else{
+                        } else {
                             enviar.println("yaExiste");
                             this.jtaConsola.append("Intento de registro de un encuestado fallido\n");
                         }
                         break;
-                        
+
                     case Strings.PETICION_CREAR_ENCUESTA:
                         this.encuesta = recibirEncuesta(recibir.readLine());
-                        
                         this.encuestaBusiness.iniciar(this.encuesta.getNombreArchivo());
-                        
+
                         this.insertado = this.encuestaBusiness.insertar(this.encuesta);
                         if (this.insertado) {
                             enviar.println("insertada");
-                            this.jtaConsola.append("La encuesta '"+this.encuesta.getTitulo()+"' se ha creado con éxito\n");
-                        }else{
+                            this.jtaConsola.append("La encuesta '" + this.encuesta.getTitulo() + "' se ha creado con éxito\n");
+                        } else {
                             enviar.println("yaExiste");
-                            this.jtaConsola.append("La encuesta '"+this.encuesta.getTitulo()+"' no se pudo ingresar al sistema\n");
+                            this.jtaConsola.append("La encuesta '" + this.encuesta.getTitulo() + "' no se pudo ingresar al sistema\n");
+                        }
+                        break;
+
+                    case Strings.PETICION_PREGUNTAS_POR_ENCUESTA:
+                        this.nombre = recibir.readLine();//nombre encuesta
+                        this.encuestaBusiness.iniciar(this.nombre);
+                        this.lista = this.encuestaBusiness.getPreguntasPorEncuesta(this.nombre);
+                        enviar.println(enviarLista(this.lista));
+                        break;
+
+                    case Strings.PETICION_GET_ENCUESTA:
+                        this.nombre = recibir.readLine();
+                        this.encuestaBusiness.iniciar(this.nombre);
+                        this.encuesta = this.encuestaBusiness.getEncuesta();
+                        enviar.println(enviarEncuesta(this.encuesta));
+                        this.jtaConsola.append("El administrador " + this.encuesta.getNickname() + " ha abierto la encuesta '" + this.nombre + "'\n");
+                        break;
+
+                    case Strings.PETICION_ELIMINA_ENCUESTA:
+                        this.nombre = recibir.readLine();
+                        this.encuestaBusiness.iniciar(this.nombre);
+                        boolean eliminado = this.encuestaBusiness.borrarEncuesta();
+                        if (eliminado) {
+                            enviar.println("eliminado");
+                            this.jtaConsola.append("La encuesta '" + this.nombre + "' ha sido eliminada con éxito\n");
+                        } else {
+                            enviar.println("noSePudoEliminar");
+                            this.jtaConsola.append("La solicitud de eliminar una encuesta ha fallado\n");
                         }
                         break;
                         
-                    case Strings.PETICION_NOMBRES_POR_ENCUESTA:
-                        this.nick = recibir.readLine();//nick
-                        this.nombreEncuesta = recibir.readLine();//nombre encuesta
-                        this.lista = new ArrayList<>();
-                        lista.add("a");
-                        lista.add("b");        
-                        lista.add("c");        
-                        enviar.println(enviarLista(this.lista));
+                    case Strings.PETICION_GUARDA_EDICION:
+                        this.encuesta = recibirEncuesta(recibir.readLine());
+                        this.encuestaBusiness.iniciar(this.encuesta.getNombreArchivo());
+                        
+                        this.editado = this.encuestaBusiness.editarEncuesta(this.encuesta);
+                        if (this.editado) {
+                            enviar.println("listo");
+                            this.jtaConsola.append("La encuesta "+this.encuesta.getTitulo()+" se ha editado con éxito\n");
+                        }else{
+                            enviar.println("noSePudoEditar");
+                            this.jtaConsola.append("Ha fallado la edición de la encuesta '"+this.encuesta.getTitulo()+"'\n");
+                        }
+                        break;
+                        
+                    /*admin*/
+                    case Strings.PETICION_ENVIAR_ENCUESTA:
+                        this.nombre = recibir.readLine();
+                        this.lista = recibirLista(recibir.readLine());
+
+                        for (int i = 0; i < this.lista.size(); i++) {
+                            this.encuestado = this.usuarioBusiness.getEncuestado(this.lista.get(i));
+                            this.encuestado.agregaEncuesta(this.nombre);
+                            this.usuarioBusiness.editaEncuestado(this.encuestado);
+                        }
+                        this.jtaConsola.append("La encuesta '" + this.nombre + "' ha sido enviada a los usuarios: " + this.lista + "\n");
+                        enviar.println("listo");
+                        break;
+                        
+                    case Strings.PETICION_SOLICITA_ENCUESTA:
+                        this.nombre = recibir.readLine();
+                        this.encuestaBusiness.iniciar(this.nombre);
+                        if (this.encuestaBusiness.getEncuesta() != null) {
+                            this.encuesta = this.encuestaBusiness.getEncuesta();
+                            enviar.println(enviarEncuesta(this.encuesta));
+                            this.jtaConsola.append("La encuesta '" + this.nombre + "' ha sido solicitada para ser llenada\n");
+                        }else{
+                            enviar.println("null");
+                            this.jtaConsola.append("La encuesta '" + this.nombre + "' no existe\n");
+                        }
+                        break;
+
+                        
+                        
+                        
+                        
+                    case Strings.PETICION_DEVOLVER_ENCUESTA:
+                        this.encuesta = recibirEncuesta(recibir.readLine());
+                        this.encuestaBusiness.iniciarEncuestaRespondida(this.encuesta.getNombreArchivo());
+                        /**
+                         * TODO
+                         **/
+                        enviar.println("listo");
                         break;
                         
                         
                         
-//                    case Strings.PETICION_EDITA_ENCUESTA:
-//                        this.nombreEncuesta = recibir.readUTF();
-//                        this.encuestaBusiness = new EncuestaBusiness();
-//                        this.encuesta = this.encuestaBusiness.getEncuesta(this.nombreEncuesta);
-//                        enviar.writeObject(this.encuesta);
-//                        this.jtaConsola.append("Se ha solicitado editar la encuesta "+this.nombreEncuesta+"\n");
-//                        break;
-//                        
-//                    
-//                    case Strings.PETICION_GUARDA_EDICION:
-//                        this.encuesta = (Encuesta) recibir.readObject();
-//                        this.encuestaBusiness =  new EncuestaBusiness(this.encuesta.getTitulo());
-//                        this.editado = this.encuestaBusiness.editarEncuesta(this.encuesta);
-//                        if (this.editado) {
-//                            this.jtaConsola.append("La encuesta "+this.encuesta.getTitulo()+" se ha editado con éxito\n");
-//                        }
-//                        break;
-//                        
-//                        //admin
-//                    case Strings.PETICION_ENVIAR_ENCUESTA:
-//                        this.nombreEncuesta = recibir.readUTF();
-//                        this.listaEncuestados = (List<String>) recibir.readObject();
-//                        
-//                        this.encuestaBusiness = new EncuestaBusiness(this.nombreEncuesta);
-//                        this.encuesta = this.encuestaBusiness.getEncuesta(this.nombreEncuesta);
-//                        List<String> enviados = new ArrayList<>();
-//                        //enviar a los usuarios conectados
-//                        
-//                        for (int i = 0; i < this.listaEncuestados.size(); i++) {
-//                            for (int j = 0; j < this.usuarioBusiness.getEncuestados().length; j++) {
-//                                if (this.usuarioBusiness.getEncuestados()[j].getNickname().equals(this.listaEncuestados.get(i))) {
-//                                    this.usuarioBusiness.getEncuestados()[j].agregaEncuesta(this.encuesta);
-//                                    enviados.add(this.usuarioBusiness.getEncuestados()[j].getNickname());
-//                                }
-//                            }
-//                        }
-//                        this.jtaConsola.append("La encuesta "+this.nombreEncuesta+" ha sido enviada a los usuarios "+enviados+"\n");
-//                        
-//                        break;
-//                        
-//                        //encuestado
-//                    case Strings.PETICION_DEVOLVER_ENCUESTA:
-//                        this.encuesta = (Encuesta) recibir.readObject();
-//                        
-//                        //Hacer metodo de quitar encuesta al usuario
-//                        //TODO
-//                        
-//                        break;
                         
+                    case Strings.PETICION_CAMBIAR_CONTRASENNA_ADMIN:
+                        this.administrador = recibirAdministrador(recibir.readLine());
+                        this.editado = this.administradorBusiness.editaAdministrador(this.administrador);
+                        if (this.editado) {
+                            enviar.println("listo");
+                            this.jtaConsola.append("La contraseña de "+this.administrador.getNickname()+" ha sido cambiada\n");
+                        }else{
+                            enviar.println("noSePudoEditar");
+                            this.jtaConsola.append("No se pudo cambiar la contraseña de "+this.administrador.getNickname()+"\n");
+                        }
+                        break;
                         
-                        
-                        
-                        
-                        
-//                    case Strings.PETICION_CAMBIAR_CONTRASENNA_ADMIN:
-//                        this.administrador = (Administrador) recibir.readObject();
-//                        this.editado = this.administradorBusiness.editaAdministrador(this.administrador);
-//                        if (this.editado) {
-//                            this.jtaConsola.append("La contraseña de "+this.administrador.getNickname()+" ha sido cambiada\n");
-//                        }
-//                        break;
-                        
-//                    case Strings.PETICION_CAMBIAR_CONTRASENNA_ENCUESTADO:
-//                        this.encuestado = (Encuestado) recibir.readObject();
-//                        this.editado = this.usuarioBusiness.editaEncuestado(this.encuestado);
-//                        if (this.editado) {
-//                            this.jtaConsola.append("La contraseña de "+this.encuestado.getNickname()+" ha sido cambiada\n");
-//                        }
-//                        break;
+                    case Strings.PETICION_CAMBIAR_CONTRASENNA_ENCUESTADO:
+                        this.encuestado = recibirEncuestado(recibir.readLine());
+                        this.editado = this.usuarioBusiness.editaEncuestado(this.encuestado);
+                        if (this.editado) {
+                            enviar.println("listo");
+                            this.jtaConsola.append("La contraseña de "+this.encuestado.getNickname()+" ha sido cambiada\n");
+                        }else{
+                            enviar.println("noSePudoEditar");
+                            this.jtaConsola.append("No se pudo cambiar la contraseña de "+this.encuestado.getNickname()+"\n");
+                        }
+                        break;
                         
                     case Strings.PETICION_ENVIAR_CORREO:
-                        this.nombreEncuesta = recibir.readLine();
-                        this.lista = recibirCorreos(recibir.readLine());
-                        EnviaCorreos enviaCorreos = new EnviaCorreos(this.nombreEncuesta, this.lista);
+                        this.nombre = recibir.readLine();
+                        this.lista = recibirLista(recibir.readLine());
+                        EnviaCorreos enviaCorreos = new EnviaCorreos(this.nombre, this.lista);
                         enviaCorreos.start();
-                        this.jtaConsola.append("La encuesta '"+this.nombreEncuesta+"' ha sido correctamente enviada por correo electrónico\n");
+                        enviar.println("listo");
+                        this.jtaConsola.append("La encuesta '" + this.nombre + "' ha sido correctamente enviada por correo electrónico\n");
                         break;
                         
+                    case Strings.PETICION_CERRAR_SESION:
+                        this.nombre = recibir.readLine();
+                        Strings.LISTA_USUARIOS_CONECTADOS.remove(this.nombre);
+                        this.jtaConsola.append("El usuario " + this.nombre + " ha cerrado la sesion\n");
+                        break;
+
                     case Strings.PETICION_LISTAS_USUARIOS:
                         enviar.println(enviarLista(this.usuarioBusiness.getNombresEncuestados()));
                         break;
@@ -256,7 +289,7 @@ public class Servidor implements Runnable {
         }
     }
 
-    private String enviarPeticionLoginAdmin(Administrador admin) {
+    private String enviarAdministrador(Administrador admin) {
         Element elemAdmin = new Element("administrador");
         elemAdmin.setAttribute("nickname", admin.getNickname());
 
@@ -268,18 +301,18 @@ public class Servidor implements Runnable {
 
         Element elemCorreo = new Element("correo");
         elemCorreo.addContent(admin.getCorreoElectronico());
-        
+
         Element elemPrimeraVez = new Element("primeraVez");
-        elemPrimeraVez.addContent(String.valueOf(admin.isPrimeraVez()));
-        
+        elemPrimeraVez.addContent(admin.isPrimeraVez());
+
         Element elemEncuestas = new Element("encuestas");
-        
+
         for (int i = 0; i < admin.getEncuestasCreadas().size(); i++) {
-            Element elemEncuesta = new Element("encuesta"+i);
+            Element elemEncuesta = new Element("encuesta" + i);
             elemEncuesta.addContent(admin.getEncuestasCreadas().get(i));
             elemEncuestas.addContent(elemEncuesta);
         }
-        
+
         elemAdmin.addContent(elemNombre);
         elemAdmin.addContent(elemContrasenna);
         elemAdmin.addContent(elemCorreo);
@@ -290,11 +323,11 @@ public class Servidor implements Runnable {
         String adminXML = output.outputString(elemAdmin);
 
         adminXML = adminXML.replace("\n", "");
-        
+
         return adminXML;
     }
-    
-    private String enviarPeticionLoginUser(Encuestado encuestado) {
+
+    private String enviarEncuestado(Encuestado encuestado) {
 
         Element elemEncuestado = new Element("encuestado");
         elemEncuestado.setAttribute("nickname", encuestado.getNickname());
@@ -307,15 +340,15 @@ public class Servidor implements Runnable {
 
         Element elemCorreo = new Element("correo");
         elemCorreo.addContent(encuestado.getCorreoElectronico());
-        
+
         Element elemEncuestas = new Element("encuestas");
-        
+
         for (int i = 0; i < encuestado.getListaEncuestas().size(); i++) {
-            Element elemEncuesta = new Element("encuesta"+i);
+            Element elemEncuesta = new Element("encuesta" + i);
             elemEncuesta.addContent(encuestado.getListaEncuestas().get(i));
             elemEncuestas.addContent(elemEncuesta);
         }
-        
+
         elemEncuestado.addContent(elemNombre);
         elemEncuestado.addContent(elemContrasenna);
         elemEncuestado.addContent(elemCorreo);
@@ -325,82 +358,145 @@ public class Servidor implements Runnable {
         String userXML = output.outputString(elemEncuestado);
 
         userXML = userXML.replace("\n", "");
-        
+
         return userXML;
     }
+
+    private String enviarLista(List<String> lista) {
+
+        Element elemNombres = new Element("nombres");
+
+        for (int i = 0; i < lista.size(); i++) {
+            Element elemNombre = new Element("nombre");
+            elemNombre.addContent(lista.get(i));
+            elemNombres.addContent(elemNombre);
+        }
+
+        XMLOutputter output = new XMLOutputter(Format.getCompactFormat());
+        String nombresXML = output.outputString(elemNombres);
+
+        nombresXML = nombresXML.replace("\n", "");
+
+        return nombresXML;
+    }
+
+    private String enviarEncuesta(Encuesta encuesta) {
+        Element elemEncuesta = new Element("encuesta");
+        Element elemCreador = new Element("creador");
+        elemCreador.addContent(encuesta.getNickname());
+
+        Element elemTitulo = new Element("titulo");
+        elemTitulo.addContent(encuesta.getTitulo());
+
+        Element elemDescripcion = new Element("descripcion");
+        elemDescripcion.addContent(encuesta.getDescripcion());
+
+        Element elemNombreArchivo = new Element("nombreArchivo");
+        elemNombreArchivo.addContent(encuesta.getNombreArchivo());
+
+        Element elemPreguntas = new Element("preguntas");
+
+        List<Pregunta> listaPreguntas = encuesta.getPreguntas();
+
+        for (int i = 0; i < listaPreguntas.size(); i++) {
+
+            Element elemPregunta = new Element("pregunta");
+            elemPregunta.setAttribute("tipo", listaPreguntas.get(i).getTipo());
+            elemPregunta.setAttribute("enunciado", listaPreguntas.get(i).getEnunciado());
+
+            List<String> listaRespuestas = encuesta.getPreguntas().get(i).getListaRespuestas();
+
+            for (String respuesta : listaRespuestas) {
+                Element elemRespuesta = new Element("respuesta");
+                elemRespuesta.addContent(respuesta);
+                elemPregunta.addContent(elemRespuesta);
+            }
+
+            elemPreguntas.addContent(elemPregunta);
+        }
+
+        elemEncuesta.addContent(elemCreador);
+        elemEncuesta.addContent(elemTitulo);
+        elemEncuesta.addContent(elemDescripcion);
+        elemEncuesta.addContent(elemNombreArchivo);
+        elemEncuesta.addContent(elemPreguntas);
+
+        XMLOutputter output = new XMLOutputter(Format.getCompactFormat());
+        String encuestaXML = output.outputString(elemEncuesta);
+
+        encuestaXML = encuestaXML.replace("\n", "");
+
+        return encuestaXML;
+    }
     
-    private Administrador recibirRegistraAdmin(String adminXML){
+    private List<String> recibirLista(String listaString) {
+
+        List<String> nombres = new ArrayList<>();
+
         try {
             SAXBuilder saxBuilder = new SAXBuilder();
-            StringReader stringReader = new StringReader(adminXML);
-            Document doc = saxBuilder.build(stringReader);
-            Element rootAdmin = doc.getRootElement();
-            
-            Administrador admin = new Administrador(rootAdmin.getChildText("nombre"),
-                                                    rootAdmin.getAttributeValue("nickname"),
-                                                    rootAdmin.getChildText("contrasenna"),
-                                                    rootAdmin.getChildText("correo"));
-            
-            admin.setPrimeraVez(Boolean.getBoolean(rootAdmin.getChildText("primeraVez")));
+            StringReader stringReader = new StringReader(listaString);
+            Document doc;
+            doc = saxBuilder.build(stringReader);
+            Element root = doc.getRootElement();
 
-            List<String> listaEncuestas = new ArrayList<>();
-            
-            for (int i = 0; i < rootAdmin.getChild("encuestas").getChildren().size(); i++) {
-                listaEncuestas.add(rootAdmin.getChild("encuestas").getChild("encuesta"+i).getValue());
+            List listaRoot = root.getChildren();
+
+            for (Object objActual : listaRoot) {
+                Element elemActual = (Element) objActual;
+                nombres.add(elemActual.getValue());
             }
-            
-            admin.setEncuestasCreadas(listaEncuestas);
-            
-            return admin;
+
+            return nombres;
         } catch (JDOMException | IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
-
-    private Encuestado recibirRegistraUser(String userXML) {
+    
+    private Encuestado recibirEncuestado(String userXML) {
         try {
             SAXBuilder saxBuilder = new SAXBuilder();
             StringReader stringReader = new StringReader(userXML);
             Document doc = saxBuilder.build(stringReader);
-            Element rootAdmin = doc.getRootElement();
-            
-            Encuestado user = new Encuestado(   rootAdmin.getChildText("nombre"),
-                                                rootAdmin.getAttributeValue("nickname"),
-                                                rootAdmin.getChildText("contrasenna"),
-                                                rootAdmin.getChildText("correo"));
-            
+            Element rootUser = doc.getRootElement();
+
+            Encuestado user = new Encuestado(rootUser.getChildText("nombre"),
+                    rootUser.getAttributeValue("nickname"),
+                    rootUser.getChildText("contrasenna"),
+                    rootUser.getChildText("correo"));
+
             List<String> listaEncuestas = new ArrayList<>();
-            
-            for (int i = 0; i < rootAdmin.getChild("encuestas").getChildren().size(); i++) {
-                listaEncuestas.add(rootAdmin.getChild("encuestas").getChild("encuesta"+i).getValue());
+
+            for (int i = 0; i < rootUser.getChild("encuestas").getChildren().size(); i++) {
+                listaEncuestas.add(rootUser.getChild("encuestas").getChild("encuesta" + i).getValue());
             }
-            
+
             user.setListaEncuestas(listaEncuestas);
-            
+
             return user;
         } catch (JDOMException | IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
-
+    
     private Encuesta recibirEncuesta(String encuestaXML) {
-        
+
         try {
             SAXBuilder saxBuilder = new SAXBuilder();
             StringReader stringReader = new StringReader(encuestaXML);
             Document doc = saxBuilder.build(stringReader);
             Element rootEncuesta = doc.getRootElement();
-            
+
             List<Pregunta> listaPreguntas = new ArrayList<>();
             Element elemPreguntas = rootEncuesta.getChild("preguntas");
-            List lista = elemPreguntas.getChildren();
-            
-            for (Object objetoActualPreguntas : lista) {
+            this.lista = elemPreguntas.getChildren();
+
+            for (Object objetoActualPreguntas : this.lista) {
                 List<String> listaRespuestas = new ArrayList<>();
                 Element elemActualPregunta = (Element) objetoActualPreguntas;
-                
+
                 Pregunta pregunta;
                 switch (elemActualPregunta.getAttributeValue("tipo")) {
                     case Strings.TIPO_MULTIPLE:
@@ -424,62 +520,50 @@ public class Servidor implements Runnable {
                 pregunta.setListaRespuestas(listaRespuestas);
 
                 listaPreguntas.add(pregunta);
-            
+
             }
-            
-            Encuesta encuesta = new Encuesta(   rootEncuesta.getChildText("creador"),
-                                                rootEncuesta.getChildText("titulo"),
-                                                rootEncuesta.getChildText("descripcion"),
-                                                rootEncuesta.getChildText("nombreArchivo"),
-                                                listaPreguntas);
-        
-        return encuesta;
-        
+
+            this.encuesta = new Encuesta(rootEncuesta.getChildText("creador"),
+                    rootEncuesta.getChildText("titulo"),
+                    rootEncuesta.getChildText("descripcion"),
+                    rootEncuesta.getChildText("nombreArchivo"),
+                    listaPreguntas);
+
+            return encuesta;
+
         } catch (JDOMException | IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
-    }
-
-    private String enviarLista(List<String> lista) {
-        
-        Element elemNombres = new Element("nombres");
-        
-        for (int i = 0; i < lista.size(); i++) {
-            Element elemNombre = new Element("nombre");
-            elemNombre.addContent(lista.get(i));
-            elemNombres.addContent(elemNombre);
-        }
-
-        XMLOutputter output = new XMLOutputter(Format.getCompactFormat());
-        String nombresXML = output.outputString(elemNombres);
-
-        nombresXML = nombresXML.replace("\n", "");
-        
-        return nombresXML;
     }
     
-    private List<String> recibirCorreos(String correosXML) {
-        
+    private Administrador recibirAdministrador(String adminXML) {
         try {
             SAXBuilder saxBuilder = new SAXBuilder();
-            StringReader stringReader = new StringReader(correosXML);
+            StringReader stringReader = new StringReader(adminXML);
             Document doc = saxBuilder.build(stringReader);
-            Element rootCorreos = doc.getRootElement();
-            
-            List<String> listaCorreos = new ArrayList<>();
-            List lista = rootCorreos.getChildren();
-            
-            for (Object objetoActual : lista) {
-                Element elemActual = (Element) objetoActual;
-                listaCorreos.add(elemActual.getValue());
+            Element rootAdmin = doc.getRootElement();
+
+            Administrador admin = new Administrador(rootAdmin.getChildText("nombre"),
+                    rootAdmin.getAttributeValue("nickname"),
+                    rootAdmin.getChildText("contrasenna"),
+                    rootAdmin.getChildText("correo"));
+
+            admin.setPrimeraVez(rootAdmin.getChildText("primeraVez"));
+
+            List<String> listaEncuestas = new ArrayList<>();
+
+            for (int i = 0; i < rootAdmin.getChild("encuestas").getChildren().size(); i++) {
+                listaEncuestas.add(rootAdmin.getChild("encuestas").getChild("encuesta" + i).getValue());
             }
-            
-            return listaCorreos;
+
+            admin.setEncuestasCreadas(listaEncuestas);
+
+            return admin;
         } catch (JDOMException | IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
         return null;
     }
+    
 }

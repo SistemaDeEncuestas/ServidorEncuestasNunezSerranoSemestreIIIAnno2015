@@ -24,12 +24,15 @@ public final class Strings {
     public final static String PETICION_REGISTRAR_USER = "registarUsuario";
     public final static String PETICION_GET_ENCUESTADOS = "getEncuestados";
     public final static String PETICION_CREAR_ENCUESTA = "crearEncuesta";
-    public final static String PETICION_EDITA_ENCUESTA = "editarEncuesta";
     public final static String PETICION_GUARDA_EDICION = "guardarEdicion";
     public final static String PETICION_ENVIAR_ENCUESTA = "enviarEncuesta";
     public final static String PETICION_DEVOLVER_ENCUESTA = "devolverEncuesta";
     public final static String PETICION_ENVIAR_CORREO = "enviarCorreo";
     public final static String PETICION_CAMBIAR_CONTRASENNA_ADMIN = "cambiarContrasennaAdministrador";
     public final static String PETICION_CAMBIAR_CONTRASENNA_ENCUESTADO = "cambiarContrasennaEncuestado";
-    public final static String PETICION_NOMBRES_POR_ENCUESTA = "nombresPorEncuesta";
+    public final static String PETICION_PREGUNTAS_POR_ENCUESTA = "nombresPorEncuesta";
+    public final static String PETICION_GET_ENCUESTA = "abrirEncuesta";
+    public final static String PETICION_ELIMINA_ENCUESTA = "eliminaEncuesta";
+    public final static String PETICION_SOLICITA_ENCUESTA = "solicitaEncuesta";
+    public final static String PETICION_CERRAR_SESION = "cerrarSesion";
 }
