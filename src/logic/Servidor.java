@@ -57,6 +57,7 @@ public class Servidor implements Runnable {
     private boolean insertado;
     private boolean editado;
     private List<String> lista;
+    private String parte;
 
     public Servidor(int puerto) {
         super();
@@ -227,6 +228,7 @@ public class Servidor implements Runnable {
                         
                     case Strings.PETICION_DEVOLVER_ENCUESTA:
                         this.encuesta = recibirEncuesta(recibir.readLine());
+//                        this.usuarioBusiness.eliminarEncuestaEnUsuario(this.encuesta.getNombreArchivo());
                         this.insertado = this.encuestaRespondidaBusiness.insertar(this.encuesta);
                         if (this.insertado) {
                             enviar.println("listo");
@@ -278,6 +280,13 @@ public class Servidor implements Runnable {
 
                     case Strings.PETICION_LISTAS_USUARIOS:
                         enviar.println(enviarLista(this.usuarioBusiness.getNombresEncuestados()));
+                        break;
+                        
+                    case Strings.PETICION_PREGUNTAS_ESTADISTICA:
+                        this.nombre = recibir.readLine();
+                        this.parte = recibir.readLine();
+                        this.lista = this.encuestaRespondidaBusiness.getPreguntas(this.nombre, this.parte);
+                        enviar.println(enviarLista(this.lista));
                         break;
                 }
                 socket.close();
@@ -378,7 +387,7 @@ public class Servidor implements Runnable {
 
         return nombresXML;
     }
-
+    
     private String enviarEncuesta(Encuesta encuesta) {
         Element elemEncuesta = new Element("encuesta");
         Element elemCreador = new Element("creador");

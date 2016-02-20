@@ -7,6 +7,8 @@ package gui;
 
 import business.AdministradorBusiness;
 import business.EncuestaBusiness;
+import business.EncuestaRespondidaBusiness;
+import business.UsuarioBusiness;
 import data.EncuestaRespondidaData;
 import domain.Administrador;
 import domain.Encuesta;
@@ -112,19 +114,25 @@ public class PruebaServidor extends javax.swing.JFrame {
 //////            }
 //////        });
         
-        EncuestaRespondidaData e = new EncuestaRespondidaData();
-        EncuestaBusiness enc = new EncuestaBusiness();
+//        EncuestaRespondidaData e = new EncuestaRespondidaData();
+//        EncuestaBusiness enc = new EncuestaBusiness();
+//        
+////        try {
+//            enc.iniciar("encuesta_3");
+//            
+////            e.insertaNuevaEncuesta("abcefg");
+////            System.out.println(e.getNumeroPorEncuesta());
+//            Encuesta encuesta = enc.getEncuesta();
+            
         
-//        try {
-            enc.iniciar("encuesta_3");
-            
-//            e.insertaNuevaEncuesta("abcefg");
-//            System.out.println(e.getNumeroPorEncuesta());
-            Encuesta encuesta = enc.getEncuesta();
+//        UsuarioBusiness u = new UsuarioBusiness();
+//        
+//        u.eliminarEncuestaEnUsuario("encuesta_2_a");
             
             
+        EncuestaRespondidaBusiness erb = new EncuestaRespondidaBusiness();
             
-            
+        System.out.println(erb.getPreguntas("encuesta_2_a", "preugnta 1"));
             
         
 //        } catch (IOException ex) {

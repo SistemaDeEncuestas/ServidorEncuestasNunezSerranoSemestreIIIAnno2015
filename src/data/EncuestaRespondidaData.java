@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -215,37 +216,55 @@ public class EncuestaRespondidaData {
         return true;
     }
     
+    public List<String> getPreguntas(String nombreEncuesta, String parte) throws JDOMException, IOException{
+        GetEncuestaPorArchivoData getEncuestaPorArchivoData = new GetEncuestaPorArchivoData();
+        List<String> lista = new ArrayList<>();
+        int numEncuestas = getNumeroPorEncuesta(nombreEncuesta);
+        List<Encuesta> listaEncuesta = new ArrayList<>();
+        
+        for (int i = 0; i < numEncuestas; i++) {
+            getEncuestaPorArchivoData.iniciar("src/files/respondidas/"+nombreEncuesta+"_"+i+".xml");
+            listaEncuesta.add(getEncuestaPorArchivoData.getEncuesta());
+        }
+        
+        for (int i = 0; i < listaEncuesta.size(); i++) {
+            for (int j = 0; j < listaEncuesta.get(i).getPreguntas().size(); j++) {
+                if (listaEncuesta.get(i).getPreguntas().get(j).getEnunciado().equals(parte)) {
+                    lista.add(listaEncuesta.get(i).getPreguntas().get(j).getListaRespuestas().get(0));
+                }
+            }
+        }
+        
+        return lista;
+    }
     
-    
-//    public Encuesta[] getTodasLasEncuestas() throws IOException, JDOMException {
-//
-//        List<String> nombresDeArchivos = this.nombresDeArchivosData.getNumeroPorEncuesta();
-//        Encuesta[] listaEncuestas = new Encuesta[nombresDeArchivos.size()];
-//        GetEncuestaPorArchivoData getEncuestaPorArchivoData = new GetEncuestaPorArchivoData();
-//        
-//        for (int i = 0; i < nombresDeArchivos.size(); i++) {
-//
-//            String aux = "src/files/" + nombresDeArchivos.get(i) + ".xml";
-//
-//            getEncuestaPorArchivoData.iniciar(aux);
-//            Encuesta encuesta = getEncuestaPorArchivoData.getEncuesta();
-//
-//            listaEncuestas[i] = encuesta;
-//        }
-//
-//        return listaEncuestas;
-//    }
+    public List<String> getNombres() throws JDOMException, IOException{
+        Document documento;
+        Element raiz;
+        String rutaArchivo = "src/files/respondidas/contadorEncuestasRespondidas.xml";
+        File archivo = new File(rutaArchivo);
+        List<String> lista = new ArrayList<>();
+        
+        if (archivo.exists()) {
+            SAXBuilder saxBuilder = new SAXBuilder();
+            saxBuilder.setIgnoringElementContentWhitespace(true);
+            documento = saxBuilder.build(rutaArchivo);
+            raiz = documento.getRootElement();
+        } else {
+            raiz = new Element("encuestasRespondidas");
+            documento = new Document(raiz);
+            XMLOutputter xmlOutputter = new XMLOutputter();
+            xmlOutputter.output(documento, new PrintWriter(rutaArchivo));
+        }
+        
+        List listaElementos = raiz.getChildren();
+        
+        for (Object objetoActual : listaElementos) {
+            Element elementoActual = (Element) objetoActual;
+            lista.add(elementoActual.getAttributeValue("titulo"));
+        }
 
-//    public Encuesta getEncuesta() throws JDOMException, IOException {
-//
-//        String aux = this.rutaArchivo;
-//
-//        GetEncuestaPorArchivoData getEncuestaPorArchivoData = new GetEncuestaPorArchivoData();
-//        getEncuestaPorArchivoData.iniciar(aux);
-//        
-//        Encuesta encuesta = getEncuestaPorArchivoData.getEncuesta();
-//
-//        return encuesta;
-//    }
+        return lista;
+    }
     
 }

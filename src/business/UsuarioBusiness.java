@@ -88,4 +88,8 @@ public class UsuarioBusiness {
     public List<String> getNombresEncuestados(){
         return this.userData.getNombresEncuestados();
     }
+    
+    public void eliminarEncuestaEnUsuario(String nombreEncuesta){
+        this.userData.eliminarEncuestaEnUsuario(nombreEncuesta);
+    }
 }

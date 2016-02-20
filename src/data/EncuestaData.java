@@ -13,6 +13,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
+import util.Strings;
 
 /**
  *
@@ -144,7 +145,9 @@ public class EncuestaData {
         Encuesta encuesta = getEncuesta();
         
         for (int i = 0; i < encuesta.getPreguntas().size(); i++) {
-            lista.add(encuesta.getPreguntas().get(i).getEnunciado());
+            if (encuesta.getPreguntas().get(i).getTipo().equals(Strings.TIPO_UNICA)) {
+                lista.add(encuesta.getPreguntas().get(i).getEnunciado());
+            }
         }
         
         return lista;

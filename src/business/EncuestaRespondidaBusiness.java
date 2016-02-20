@@ -30,4 +30,14 @@ public class EncuestaRespondidaBusiness {
         return false;
     }
     
+    public List<String> getPreguntas(String nombreEncuesta, String parte){
+        try {
+            return this.encuestaRespondidaData.getPreguntas(nombreEncuesta, parte);
+        } catch (JDOMException ex) {
+            Logger.getLogger(EncuestaRespondidaBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(EncuestaRespondidaBusiness.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 }

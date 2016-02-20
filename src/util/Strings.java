@@ -35,4 +35,5 @@ public final class Strings {
     public final static String PETICION_ELIMINA_ENCUESTA = "eliminaEncuesta";
     public final static String PETICION_SOLICITA_ENCUESTA = "solicitaEncuesta";
     public final static String PETICION_CERRAR_SESION = "cerrarSesion";
+    public final static String PETICION_PREGUNTAS_ESTADISTICA = "estadistica";
 }

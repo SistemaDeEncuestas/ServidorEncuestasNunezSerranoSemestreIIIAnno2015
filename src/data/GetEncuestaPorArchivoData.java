@@ -1,22 +1,18 @@
 package data;
 
-import business.NombresDeArchivosBusiness;
 import domain.Encuesta;
 import domain.Pregunta;
 import domain.PreguntaAbierta;
 import domain.PreguntaRespuestaMultiple;
 import domain.PreguntaRespuestaUnica;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
 import util.Strings;
 
 /**
