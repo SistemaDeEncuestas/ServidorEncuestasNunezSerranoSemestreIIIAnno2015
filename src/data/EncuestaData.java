@@ -32,8 +32,16 @@ public class EncuestaData {
         this.nombresDeArchivosData = new NombresDeArchivosData();
         this.encuestaRespondidaData = new EncuestaRespondidaData();
     }
-    
-    public void iniciar(String rutaArchivo) throws JDOMException, IOException{
+
+    /**
+     * Inicia la clase encuesta data con una encuesta
+     *
+     * @param rutaArchivo Ruta de la encuesta que se va a trabajar
+     * @throws JDOMException
+     * @throws IOException
+     *
+     */
+    public void iniciar(String rutaArchivo) throws JDOMException, IOException {
         this.nombreArchivo = rutaArchivo;
         this.rutaArchivo = "src/files/" + rutaArchivo + ".xml";
         File archivo = new File(this.rutaArchivo);
@@ -50,12 +58,19 @@ public class EncuestaData {
             guardarXML();
         }
     }
-    
+
     public void guardarXML() throws FileNotFoundException, IOException {
         XMLOutputter xmlOutputter = new XMLOutputter();
         xmlOutputter.output(this.documento, new PrintWriter(this.rutaArchivo));
     }
 
+    /**
+     * Inserta una encuesta al sistema
+     * @throws IOException
+     * @throws JDOMException
+     * @param encuesta 
+     * @return 
+     **/
     public boolean insertar(Encuesta encuesta) throws IOException, JDOMException {
 
         if (this.nombresDeArchivosData.existeArchivo(encuesta.getNombreArchivo())) {//ya existe
@@ -70,7 +85,7 @@ public class EncuestaData {
 
         Element elemDescripcion = new Element("descripcion");
         elemDescripcion.addContent(encuesta.getDescripcion());
-        
+
         Element elemNombreArchivo = new Element("nombreArchivo");
         elemNombreArchivo.addContent(encuesta.getNombreArchivo());
 
@@ -107,12 +122,18 @@ public class EncuestaData {
         return true;
     }
 
+    /**
+     * Obtiene todas las encuestas del sistema
+     * @throws IOException
+     * @throws JDOMException
+     * @return 
+     **/
     public Encuesta[] getTodasLasEncuestas() throws IOException, JDOMException {
 
         List<String> nombresDeArchivos = this.nombresDeArchivosData.getNombresDeEncuestas();
         Encuesta[] listaEncuestas = new Encuesta[nombresDeArchivos.size()];
         GetEncuestaPorArchivoData getEncuestaPorArchivoData = new GetEncuestaPorArchivoData();
-        
+
         for (int i = 0; i < nombresDeArchivos.size(); i++) {
 
             String aux = "src/files/" + nombresDeArchivos.get(i) + ".xml";
@@ -126,58 +147,85 @@ public class EncuestaData {
         return listaEncuestas;
     }
 
+    /**
+     * Obtiene la encuesta actual
+     * @throws IOException
+     * @throws JDOMException
+     * @return 
+     **/
     public Encuesta getEncuesta() throws JDOMException, IOException {
 
         String aux = this.rutaArchivo;
 
         GetEncuestaPorArchivoData getEncuestaPorArchivoData = new GetEncuestaPorArchivoData();
         getEncuestaPorArchivoData.iniciar(aux);
-        
+
         Encuesta encuesta = getEncuestaPorArchivoData.getEncuesta();
 
         return encuesta;
     }
 
-    public List<String> getPreguntasPorEncuesta(String nombreEncuesta) throws JDOMException, IOException{
-        
+    /**
+     * Obtiene todas las preguntas de una encuesta
+     * @param nombreEncuesta 
+     * @throws JDOMException
+     * @throws IOException
+     * @return 
+     **/
+    public List<String> getPreguntasPorEncuesta(String nombreEncuesta) throws JDOMException, IOException {
+
         List<String> lista = new ArrayList<>();
-        
+
         Encuesta encuesta = getEncuesta();
-        
+
         for (int i = 0; i < encuesta.getPreguntas().size(); i++) {
             if (encuesta.getPreguntas().get(i).getTipo().equals(Strings.TIPO_UNICA)) {
                 lista.add(encuesta.getPreguntas().get(i).getEnunciado());
             }
         }
-        
+
         return lista;
     }
-    
+
+    /**
+     * Obtiene todas las encuestas de una administrador
+     * @param nickname 
+     * @throws JDOMException
+     * @throws IOException
+     * @return 
+     **/
     public Encuesta[] getEncuestasPorAdmin(String nickname) throws IOException, JDOMException {
-        
+
         Encuesta[] todasLasEncuestas = getTodasLasEncuestas();
         List<Encuesta> listaEncuestas = new ArrayList<>();
-        
+
         for (int i = 0; i < todasLasEncuestas.length; i++) {
             if (todasLasEncuestas[i].getNickname().equals(nickname)) {
                 listaEncuestas.add(todasLasEncuestas[i]);
             }
         }
-        
+
         Encuesta[] encuestasPorAdmin = new Encuesta[listaEncuestas.size()];
-        
+
         for (int i = 0; i < encuestasPorAdmin.length; i++) {
             encuestasPorAdmin[i] = listaEncuestas.get(i);
         }
-        
+
         return encuestasPorAdmin;
     }
-    
+
+    /**
+     * Obtiene una encuesta del sistema 
+     * @param nickname 
+     * @throws JDOMException
+     * @throws IOException
+     * @return 
+     **/
     public List<String> getNombresDeEncuestasPorAdmin(String nickname) throws IOException, JDOMException {
-        
+
         Encuesta[] todasLasEncuestas = getTodasLasEncuestas();
         List<String> listaEncuestas = new ArrayList<>();
-        
+
         for (int i = 0; i < todasLasEncuestas.length; i++) {
             if (todasLasEncuestas[i].getNickname().equals(nickname)) {
                 listaEncuestas.add(todasLasEncuestas[i].getNombreArchivo());
@@ -186,14 +234,29 @@ public class EncuestaData {
         return listaEncuestas;
     }
 
+    /**
+     * Borra una encuesta del sistema
+     *
+     * @throws IOException
+     * @return 
+     *
+     */
     public boolean borrarEncuesta() throws IOException {
         this.raiz.removeContent();
-        
-            guardarXML();
-        
+
+        guardarXML();
+
         return this.nombresDeArchivosData.borrarNombreArchivo(this.nombreArchivo);
     }
 
+    /**
+     * Edita una encuesta del sistema
+     *
+     * @throws IOException
+     * @throws JDOMException
+     * @return 
+     *
+     */
     public boolean editarEncuesta(Encuesta encuesta) throws IOException, JDOMException {
 
         return borrarEncuesta() && insertar(encuesta);

@@ -27,6 +27,12 @@ public class GetEncuestaPorArchivoData {
     public GetEncuestaPorArchivoData() throws JDOMException, IOException {
     }
 
+     /**
+     * Inicia la clase con el archivo deseado
+     * @param rutaArchivo 
+     * @throws JDOMException
+     * @throws IOException
+     **/
     public void iniciar(String rutaArchivo) throws JDOMException, IOException{
         this.rutaArchivo = rutaArchivo;
         File archivo = new File(this.rutaArchivo);
@@ -43,6 +49,10 @@ public class GetEncuestaPorArchivoData {
         }
     }
     
+     /**
+     * Obtiene una encuesta
+     * @return 
+     **/
     public Encuesta getEncuesta(){
         
         List<Pregunta> listaPreguntas = new ArrayList<>();

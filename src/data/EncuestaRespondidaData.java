@@ -27,6 +27,14 @@ public class EncuestaRespondidaData {
     public EncuestaRespondidaData() {
     }
     
+    /**
+     * Inicia la clase encuesta respondida
+     * @param rutaArchivo 
+     * @param cont 
+     * @throws JDOMException
+     * @throws IOException
+     * @return 
+     **/
     private void iniciar(String rutaArchivo, int cont) throws JDOMException, IOException{
         this.nombreArchivo = rutaArchivo;
         this.rutaArchivo = "src/files/respondidas/" + rutaArchivo + "_" + cont +".xml";
@@ -50,6 +58,13 @@ public class EncuestaRespondidaData {
         xmlOutputter.output(this.documento, new PrintWriter(this.rutaArchivo));
     }
     
+    /**
+     * Inserta una encuesta que ya esta respondida al sistema
+     * @param nombre  
+     * @param cont 
+     * @throws JDOMException
+     * @throws IOException
+     **/
     public void insertaNuevaEncuesta(String nombre, int cont) throws IOException, JDOMException{
         Document documento;
         Element raiz;
@@ -76,6 +91,13 @@ public class EncuestaRespondidaData {
         xmlOutputter.output(documento, new PrintWriter(rutaArchivo));
     }
     
+    /**
+     * Devuelve la cantidad de encuestas que hay respondidas para casa encuesta
+     * @param nombreEncuesta 
+     * @throws JDOMException
+     * @throws IOException
+     * @return 
+     **/
     public int getNumeroPorEncuesta(String nombreEncuesta) throws JDOMException, IOException {
         Document documento;
         Element raiz;
@@ -109,6 +131,13 @@ public class EncuestaRespondidaData {
         return 0;
     }
     
+     /**
+     * Setea la cantidad de encuestas que hay respondidas para casa encuesta
+     * @param nombreEncuesta 
+     * @param cont 
+     * @throws JDOMException
+     * @throws IOException
+     **/
     public void setNumeroPorEncuesta(String nombreEncuesta, int cont) throws JDOMException, IOException {
         Document documento;
         Element raiz;
@@ -133,6 +162,13 @@ public class EncuestaRespondidaData {
         }
     }
     
+     /**
+     * Elimina una encuesta respondida
+     * @param nombreEncuesta 
+     * @throws JDOMException
+     * @throws IOException
+     * @return 
+     **/
     public boolean eliminaEncuesta(String nombreEncuesta) throws FileNotFoundException, IOException, JDOMException {
         Document documento;
         Element raiz;
@@ -166,6 +202,13 @@ public class EncuestaRespondidaData {
         return false;
     }
     
+     /**
+     * Inserta una encuesta respondida
+     * @param encuesta 
+     * @throws JDOMException
+     * @throws IOException
+     * @return 
+     **/
     public boolean insertar(Encuesta encuesta) throws IOException, JDOMException {
         int cont = getNumeroPorEncuesta(encuesta.getNombreArchivo());
         
@@ -216,6 +259,14 @@ public class EncuestaRespondidaData {
         return true;
     }
     
+     /**
+     * Obtiene las preguntas de una encuesta
+     * @param nombreEncuesta 
+     * @param parte 
+     * @throws JDOMException
+     * @throws IOException
+     * @return 
+     **/
     public List<String> getPreguntas(String nombreEncuesta, String parte) throws JDOMException, IOException{
         GetEncuestaPorArchivoData getEncuestaPorArchivoData = new GetEncuestaPorArchivoData();
         List<String> lista = new ArrayList<>();
@@ -238,6 +289,12 @@ public class EncuestaRespondidaData {
         return lista;
     }
     
+     /**
+     * Obtiene los nombres de las encuestas
+     * @throws JDOMException
+     * @throws IOException
+     * @return 
+     **/
     public List<String> getNombres() throws JDOMException, IOException{
         Document documento;
         Element raiz;

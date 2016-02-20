@@ -1,7 +1,5 @@
 package data;
 
-import business.EncuestaBusiness;
-import business.NombresDeArchivosBusiness;
 import domain.Administrador;
 import domain.Encuesta;
 import java.io.File;
@@ -9,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -28,8 +25,14 @@ public class AdministradorData {
     private Element raiz;
     private String rutaArchivo;
 
+    /**
+     * Inicializa el administrador data
+     *
+     * @throws IOException
+     * @throws JDOMException
+     *
+     */
     public AdministradorData() throws JDOMException, IOException {
-//        this.encuestaData = new EncuestaData();
         this.rutaArchivo = "src/files/administradores.xml";
         File archivo = new File(this.rutaArchivo);
 
@@ -51,6 +54,11 @@ public class AdministradorData {
         xmlOutputter.output(this.documento, new PrintWriter(this.rutaArchivo));
     }
 
+    /**
+     * Inserta un administrador al sistema
+     * @param administrador 
+     * @throws IOException
+     **/
     public void insertar(Administrador administrador) throws IOException {
 
         Element eAdministrador = new Element("administrador");
@@ -65,19 +73,6 @@ public class AdministradorData {
         eCorreo.addContent(administrador.getCorreoElectronico());
         eAdministrador.addContent(eCorreo);
 
-//        System.out.println("num: "+administrador.getEncuestasCreadas() + "--- tam: "+ administrador.getEncuestasCreadas().size());
-//        
-//        List<String> listaEncuestas = administrador.getEncuestasCreadas();
-////        Element eEncuestas = new Element("encuestas");
-//
-//        for (int i = 0; i < listaEncuestas.size(); i++) {
-//            Element eEncuesta = new Element("encuesta" + i);
-//            eEncuesta.addContent(listaEncuestas.get(i));
-//            eEncuestas.addContent(eEncuesta);
-//        }
-//        eAdministrador.addContent(eEncuestas);
-        
-        
         Element ePrimeraVez = new Element("primeraVez");
         String tipo = String.valueOf(administrador.isPrimeraVez());
         ePrimeraVez.addContent(tipo);
@@ -87,12 +82,26 @@ public class AdministradorData {
         guardarXML();
     }
 
-    public boolean insertarEncuesta(String nombreEncuesta, String nickName) throws IOException, JDOMException{
+    /**
+     * Le inserta una encuesta a un administrador
+     * @param nombreEncuesta 
+     * @param nickName 
+     * @throws IOException
+     * @throws JDOMException
+     * @return 
+     **/
+    public boolean insertarEncuesta(String nombreEncuesta, String nickName) throws IOException, JDOMException {
         Administrador admin = getAdministrador(nickName);
         admin.addEncuestasCreadas(nombreEncuesta);
         return editaAdministrador(admin);
     }
-    
+
+    /**
+     * Obtiene todos los administradores del sistema
+     * @throws IOException
+     * @throws JDOMException
+     * @return 
+     **/
     public Administrador[] getAdministradores() throws IOException, JDOMException {
 
         int cantidadProyectos = this.raiz.getContentSize();
@@ -102,44 +111,26 @@ public class AdministradorData {
         List listaElementosAdmins = this.raiz.getChildren();
 
         for (Object objetoActual : listaElementosAdmins) {
-
-//            List<Encuesta> listaEncuestasCreadas = new ArrayList<>();
-
             Element elementoActual = (Element) objetoActual;
-
-//            NombresDeArchivosBusiness nombreBusiness = new NombresDeArchivosBusiness();
             List<String> listaNombresEncuestas = new ArrayList<>();
-            
-//            for (int i = 0; i < listaNombresEncuestas.size(); i++) {
-//                encuestaBusiness.iniciar(listaNombresEncuestas.get(i));
-//                Encuesta encuestaTemporal = encuestaBusiness.getEncuesta();
-//                if (encuestaTemporal.getNickname().equals(elementoActual.getAttributeValue("nickname"))) {
-////                    listaEncuestasCreadas.add(encuestaTemporal.get);
-//                }
-//            }
 
             Administrador adminActual = new Administrador(elementoActual.getChild("nombre").getValue(),
                     elementoActual.getAttributeValue("nickname"),
                     elementoActual.getChild("contrasenna").getValue(),
                     elementoActual.getChild("correo").getValue());
 
-//            adminActual.setEncuestasCreadas(this.encuestaData.getNombresDeEncuestasPorAdmin(elementoActual.getAttributeValue("nickname")));
             this.encuestaData = new EncuestaData();
             Encuesta[] aux = this.encuestaData.getEncuestasPorAdmin(elementoActual.getAttributeValue("nickname"));
-            
+
             for (int i = 0; i < aux.length; i++) {
                 listaNombresEncuestas.add(aux[i].getNombreArchivo());
             }
-            
+
             adminActual.setEncuestasCreadas(listaNombresEncuestas);
-            
-            
-            
+
             String primeraVez = elementoActual.getChild("primeraVez").getValue();
-            
-            
             adminActual.setPrimeraVez(primeraVez);
-         
+
             administradores[contador++] = adminActual;
         }
 
@@ -147,6 +138,13 @@ public class AdministradorData {
 
     }
 
+    /**
+     * Obtiene un solo administrador del sistema por nikname
+     * @param nickname 
+     * @throws IOException
+     * @throws JDOMException
+     * @return 
+     **/
     public Administrador getAdministrador(String nickname) throws IOException, JDOMException {
 
         Administrador[] admin = getAdministradores();
@@ -155,11 +153,17 @@ public class AdministradorData {
             if (admin[i].getNickname().equals(nickname)) {
                 return admin[i];
             }
-
         }
         return null;
     }
 
+    /**
+     * Elimina un administrador al sistema
+     * @param nickname 
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @return 
+     **/
     public boolean eliminaAdministrador(String nickname) throws FileNotFoundException, IOException {
 
         List listaElementos = this.raiz.getChildren();
@@ -178,6 +182,12 @@ public class AdministradorData {
         return false;
     }
 
+    /**
+     * Obtiene los nombres de los administradores
+     * @throws JDOMException
+     * @throws IOException
+     * @return 
+     **/
     public String[] getNombresParaConsola() throws IOException, JDOMException {
         List<String> nombresUnicos = new ArrayList<>();
 
@@ -199,6 +209,12 @@ public class AdministradorData {
         return nombres;
     }
 
+    /**
+     * Edita un administrador del sistema
+     * @param administrador 
+     * @throws IOException
+     * @return 
+     **/
     public boolean editaAdministrador(Administrador administrador) throws IOException {
         boolean eliminado = eliminaAdministrador(administrador.getNickname());
         if (eliminado) {

@@ -1,6 +1,5 @@
 package data;
 
-import domain.Encuesta;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -45,13 +44,12 @@ public class NombresDeArchivosData {
         xmlOutputter.output(this.documento, new PrintWriter(this.rutaArchivo));
     }
 
-//    /**
-//     * <nombreArchivos>
-//     *      <nombre creador="Adrian">
-//     *          nombre1
-//     *      </nombre>
-//     * </nombreArchivos>
-//     **/
+     /**
+     * Inserta el nombre de un archivo
+     * @param nombreArchivo 
+     * @param creador 
+     * @throws IOException
+     **/
     public void insertarNombre(String nombreArchivo, String creador) throws IOException {
 
         Element elemNombre = new Element("nombre");
@@ -62,6 +60,10 @@ public class NombresDeArchivosData {
         guardarXML();
     }
 
+     /**
+     * Devuelve una lista con los nombres de todas las encuestas
+     * @return 
+     **/
     public List<String> getNombresDeEncuestas() {
 
         List<String> listaNombres = new ArrayList<>();
@@ -75,6 +77,11 @@ public class NombresDeArchivosData {
         return listaNombres;
     }
     
+     /**
+     * Verifica si la encuesta a insertar ya exista
+     * @param nombreArchivo 
+     * @return 
+     **/
     public boolean existeArchivo(String nombreArchivo) {
 
         List<String> lista = getNombresDeEncuestas();
@@ -88,6 +95,12 @@ public class NombresDeArchivosData {
         return false;
     }
 
+     /**
+     * Borra una encuesta del sistema
+     * @param nombreArchivo 
+     * @throws IOException
+     * @return 
+     **/
     public boolean borrarNombreArchivo(String nombreArchivo) throws IOException{
         
         List listaElementos = this.raiz.getChildren();
