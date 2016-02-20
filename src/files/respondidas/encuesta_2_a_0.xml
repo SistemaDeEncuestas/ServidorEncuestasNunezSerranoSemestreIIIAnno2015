@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<encuesta_2_a><creador>a</creador><titulo>encuesta</titulo><descripcion>descripcion de la encuesta 2</descripcion><nombreArchivo>encuesta_2_a</nombreArchivo><preguntas><pregunta tipo="unica" enunciado="preugnta 1"><respuesta>1</respuesta></pregunta><pregunta tipo="abierta" enunciado="pregunta 2"><respuesta>adrian</respuesta></pregunta><pregunta tipo="unica" enunciado="pregunta 3"><respuesta>s</respuesta></pregunta><pregunta tipo="unica" enunciado="Pregunta 4"><respuesta>d-(n_n)z</respuesta></pregunta></preguntas></encuesta_2_a>

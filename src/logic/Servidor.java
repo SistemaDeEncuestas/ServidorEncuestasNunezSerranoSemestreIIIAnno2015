@@ -2,6 +2,7 @@ package logic;
 
 import business.AdministradorBusiness;
 import business.EncuestaBusiness;
+import business.EncuestaRespondidaBusiness;
 import business.UsuarioBusiness;
 import domain.Administrador;
 import domain.Encuesta;
@@ -52,6 +53,7 @@ public class Servidor implements Runnable {
     private AdministradorBusiness administradorBusiness;
     private EncuestaBusiness encuestaBusiness;
     private UsuarioBusiness usuarioBusiness;
+    private EncuestaRespondidaBusiness encuestaRespondidaBusiness;
     private boolean insertado;
     private boolean editado;
     private List<String> lista;
@@ -82,6 +84,7 @@ public class Servidor implements Runnable {
 
                 this.peticion = recibir.readLine();
 
+                this.encuestaRespondidaBusiness = new EncuestaRespondidaBusiness();
                 this.administradorBusiness = new AdministradorBusiness();
                 this.usuarioBusiness = new UsuarioBusiness();
                 this.encuestaBusiness = new EncuestaBusiness();
@@ -221,22 +224,18 @@ public class Servidor implements Runnable {
                             this.jtaConsola.append("La encuesta '" + this.nombre + "' no existe\n");
                         }
                         break;
-
-                        
-                        
-                        
                         
                     case Strings.PETICION_DEVOLVER_ENCUESTA:
                         this.encuesta = recibirEncuesta(recibir.readLine());
-                        this.encuestaBusiness.iniciarEncuestaRespondida(this.encuesta.getNombreArchivo());
-                        /**
-                         * TODO
-                         **/
-                        enviar.println("listo");
+                        this.insertado = this.encuestaRespondidaBusiness.insertar(this.encuesta);
+                        if (this.insertado) {
+                            enviar.println("listo");
+                            this.jtaConsola.append("La respuesta de la encuesta '" + this.nombre + "' ha sido guardada con éxito\n");
+                        }else{
+                            enviar.println("noSePudoInsertar");
+                            this.jtaConsola.append("No se ha podido guardar la encuesta '" + this.nombre + "'\n");
+                        }
                         break;
-                        
-                        
-                        
                         
                     case Strings.PETICION_CAMBIAR_CONTRASENNA_ADMIN:
                         this.administrador = recibirAdministrador(recibir.readLine());

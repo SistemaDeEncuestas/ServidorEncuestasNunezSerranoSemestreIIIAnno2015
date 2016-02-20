@@ -1,6 +1,3 @@
-    /*  Hacer crud
- editar
- */
 package data;
 
 import domain.Encuesta;
@@ -24,37 +21,20 @@ import org.jdom.output.XMLOutputter;
 public class EncuestaData {
 
     private NombresDeArchivosData nombresDeArchivosData;
-
     private Document documento;
     private Element raiz;
     private String rutaArchivo;
     private String nombreArchivo;
+    private EncuestaRespondidaData encuestaRespondidaData;
 
     public EncuestaData() throws JDOMException, IOException {
         this.nombresDeArchivosData = new NombresDeArchivosData();
+        this.encuestaRespondidaData = new EncuestaRespondidaData();
     }
     
     public void iniciar(String rutaArchivo) throws JDOMException, IOException{
         this.nombreArchivo = rutaArchivo;
         this.rutaArchivo = "src/files/" + rutaArchivo + ".xml";
-        File archivo = new File(this.rutaArchivo);
-
-        if (archivo.exists()) {
-            SAXBuilder saxBuilder = new SAXBuilder();
-            saxBuilder.setIgnoringElementContentWhitespace(true);
-            this.documento = saxBuilder.build(this.rutaArchivo);
-            this.raiz = this.documento.getRootElement();
-        } else {
-            this.raiz = new Element(rutaArchivo);
-            this.documento = new Document(this.raiz);
-
-            guardarXML();
-        }
-    }
-    
-    public void iniciarEncuestaRespondida(String rutaArchivo) throws JDOMException, IOException{
-        this.nombreArchivo = rutaArchivo;
-        this.rutaArchivo = "src/files/respondidas/" + rutaArchivo + ".xml";
         File archivo = new File(this.rutaArchivo);
 
         if (archivo.exists()) {
@@ -121,6 +101,7 @@ public class EncuestaData {
         this.raiz.addContent(elemPreguntas);
         guardarXML();
 
+        this.encuestaRespondidaData.insertaNuevaEncuesta(encuesta.getNombreArchivo(), 0);
         this.nombresDeArchivosData.insertarNombre(encuesta.getNombreArchivo(), encuesta.getNickname());
         return true;
     }

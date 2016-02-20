@@ -33,16 +33,6 @@ public class EncuestaBusiness {
         }
     }
     
-    public void iniciarEncuestaRespondida(String rutaArchivo){
-        try {
-            this.encuestaData.iniciarEncuestaRespondida(rutaArchivo);
-        } catch (JDOMException ex) {
-            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
     public boolean insertar(Encuesta encuesta){
         try {
             return this.encuestaData.insertar(encuesta);

@@ -7,6 +7,7 @@ package gui;
 
 import business.AdministradorBusiness;
 import business.EncuestaBusiness;
+import data.EncuestaRespondidaData;
 import domain.Administrador;
 import domain.Encuesta;
 import domain.Pregunta;
@@ -27,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import logic.Servidor;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import util.Strings;
@@ -102,14 +104,35 @@ public class PruebaServidor extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-//    public static void main(String args[]) {
-//
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new PruebaServidor();
-//            }
-//        });
-//     }
+    public static void main(String args[]) {
+////
+//////        java.awt.EventQueue.invokeLater(new Runnable() {
+//////            public void run() {
+//////                new PruebaServidor();
+//////            }
+//////        });
+        
+        EncuestaRespondidaData e = new EncuestaRespondidaData();
+        EncuestaBusiness enc = new EncuestaBusiness();
+        
+//        try {
+            enc.iniciar("encuesta_3");
+            
+//            e.insertaNuevaEncuesta("abcefg");
+//            System.out.println(e.getNumeroPorEncuesta());
+            Encuesta encuesta = enc.getEncuesta();
+            
+            
+            
+            
+            
+        
+//        } catch (IOException ex) {
+//            Logger.getLogger(PruebaServidor.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (JDOMException ex) {
+//            Logger.getLogger(PruebaServidor.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+     }
 
     public void iniciar(){
         String r1 = "resp 1 - pregunt";

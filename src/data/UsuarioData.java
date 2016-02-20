@@ -161,4 +161,22 @@ public class UsuarioData {
         }
         return lista;
     }
+    
+    public void eliminarEncuestaEnUsuario(String nombreEncuesta){
+        List lista = this.raiz.getChildren();
+
+        for (Object objetoActual : lista) {
+
+            Element elementoActual = (Element) objetoActual;
+            List encuestas = elementoActual.getChild("encuestas").getChildren();
+            
+            for (Object objetoEncuesta : encuestas) {
+                Element encuestaActual = (Element) objetoEncuesta;
+                if (encuestaActual.getValue().equals(nombreEncuesta)) {
+                    elementoActual.getChild("encuestas").removeContent(encuestaActual);
+                    encuestaActual.removeContent();
+                }
+            }
+        }
+    }
 }
