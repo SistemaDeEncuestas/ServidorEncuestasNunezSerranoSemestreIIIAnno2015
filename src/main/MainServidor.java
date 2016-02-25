@@ -13,6 +13,5 @@ public class MainServidor {
         int puerto = Strings.PUERTO;
 
         ServidorInterfaz servidorInterfaz = new ServidorInterfaz(puerto);
-        servidorInterfaz.setVisible(true);
     }
 }

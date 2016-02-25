@@ -45,7 +45,7 @@ public class EncuestaData {
         this.nombreArchivo = rutaArchivo;
         this.rutaArchivo = "src/files/" + rutaArchivo + ".xml";
         File archivo = new File(this.rutaArchivo);
-
+        
         if (archivo.exists()) {
             SAXBuilder saxBuilder = new SAXBuilder();
             saxBuilder.setIgnoringElementContentWhitespace(true);
@@ -172,7 +172,7 @@ public class EncuestaData {
      * @throws IOException
      * @return 
      **/
-    public List<String> getPreguntasPorEncuesta(String nombreEncuesta) throws JDOMException, IOException {
+    public List<String> getPreguntasPorEncuesta() throws JDOMException, IOException {
 
         List<String> lista = new ArrayList<>();
 

@@ -22,9 +22,7 @@ public class EncuestaRespondidaBusiness {
     public boolean insertar(Encuesta encuesta){
         try {
             return this.encuestaRespondidaData.insertar(encuesta);
-        } catch (IOException ex) {
-            Logger.getLogger(EncuestaRespondidaBusiness.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JDOMException ex) {
+        } catch (IOException | JDOMException ex) {
             Logger.getLogger(EncuestaRespondidaBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
@@ -33,9 +31,7 @@ public class EncuestaRespondidaBusiness {
     public List<String> getPreguntas(String nombreEncuesta, String parte){
         try {
             return this.encuestaRespondidaData.getPreguntas(nombreEncuesta, parte);
-        } catch (JDOMException ex) {
-            Logger.getLogger(EncuestaRespondidaBusiness.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (JDOMException | IOException ex) {
             Logger.getLogger(EncuestaRespondidaBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;

@@ -26,13 +26,13 @@ public class ListasServidor implements Runnable {
 
     @Override
     public void run() {
-
+        
         while (true) {
 
             iniciar();
 
             try {
-                Thread.sleep(5000);
+                Thread.sleep(3000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ListasServidor.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -18,9 +18,7 @@ public class EncuestaBusiness {
     public EncuestaBusiness() {
         try {
             this.encuestaData = new EncuestaData();
-        } catch (JDOMException ex) {
-            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (JDOMException | IOException ex) {
             Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -60,12 +58,10 @@ public class EncuestaBusiness {
         return null;
     }
     
-    public List<String> getPreguntasPorEncuesta(String nombreEncuesta){
+    public List<String> getPreguntasPorEncuesta(){
         try {
-            return this.encuestaData.getPreguntasPorEncuesta(nombreEncuesta);
-        } catch (JDOMException ex) {
-            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+            return this.encuestaData.getPreguntasPorEncuesta();
+        } catch (JDOMException | IOException ex) {
             Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -83,9 +79,7 @@ public class EncuestaBusiness {
     public List<String> getNombresDeEncuestasPorAdmin(String nickname){
         try {
             return this.encuestaData.getNombresDeEncuestasPorAdmin(nickname);
-        } catch (IOException ex) {
-            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JDOMException ex) {
+        } catch (IOException | JDOMException ex) {
             Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -116,9 +110,7 @@ public class EncuestaBusiness {
     public boolean editarEncuesta(Encuesta encuesta){
         try {
             return this.encuestaData.editarEncuesta(encuesta);
-        } catch (IOException ex) {
-            Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JDOMException ex) {
+        } catch (IOException | JDOMException ex) {
             Logger.getLogger(EncuestaBusiness.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;

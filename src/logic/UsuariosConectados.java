@@ -27,7 +27,7 @@ public class UsuariosConectados implements Runnable{
             iniciar();
             
             try {
-                Thread.sleep(5000);
+                Thread.sleep(3000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(UsuariosConectados.class.getName()).log(Level.SEVERE, null, ex);
             }

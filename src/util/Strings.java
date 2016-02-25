@@ -34,7 +34,7 @@ public final class Strings {
     public final static String PETICION_ENVIAR_CORREO = "enviarCorreo";
     public final static String PETICION_CAMBIAR_CONTRASENNA_ADMIN = "cambiarContrasennaAdministrador";
     public final static String PETICION_CAMBIAR_CONTRASENNA_ENCUESTADO = "cambiarContrasennaEncuestado";
-    public final static String PETICION_PREGUNTAS_POR_ENCUESTA = "nombresPorEncuesta";
+    public final static String PETICION_NOMBRES_POR_ENCUESTA = "nombresPorEncuesta";
     public final static String PETICION_GET_ENCUESTA = "abrirEncuesta";
     public final static String PETICION_ELIMINA_ENCUESTA = "eliminaEncuesta";
     public final static String PETICION_SOLICITA_ENCUESTA = "solicitaEncuesta";

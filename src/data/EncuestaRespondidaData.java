@@ -22,7 +22,6 @@ public class EncuestaRespondidaData {
     private Document documento;
     private Element raiz;
     private String rutaArchivo;
-    private String nombreArchivo;
 
     public EncuestaRespondidaData() {
     }
@@ -36,7 +35,6 @@ public class EncuestaRespondidaData {
      * @return 
      **/
     private void iniciar(String rutaArchivo, int cont) throws JDOMException, IOException{
-        this.nombreArchivo = rutaArchivo;
         this.rutaArchivo = "src/files/respondidas/" + rutaArchivo + "_" + cont +".xml";
         File archivo = new File(this.rutaArchivo);
 

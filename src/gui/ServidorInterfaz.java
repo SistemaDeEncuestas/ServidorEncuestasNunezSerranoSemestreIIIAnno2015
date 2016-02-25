@@ -123,6 +123,8 @@ public class ServidorInterfaz extends JFrame implements ActionListener{
         this.listasServidor = new ListasServidor(listaAdmins, listaEncuestas);
         Thread hiloListas = new Thread(this.listasServidor);
         hiloListas.start();
+        
+        this.setVisible(true);
     }
 
     @Override

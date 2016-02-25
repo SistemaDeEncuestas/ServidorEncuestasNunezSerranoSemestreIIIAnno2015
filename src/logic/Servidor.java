@@ -164,10 +164,10 @@ public class Servidor implements Runnable {
                         }
                         break;
 
-                    case Strings.PETICION_PREGUNTAS_POR_ENCUESTA:
+                    case Strings.PETICION_NOMBRES_POR_ENCUESTA:
                         this.nombre = recibir.readLine();//nombre encuesta
                         this.encuestaBusiness.iniciar(this.nombre);
-                        this.lista = this.encuestaBusiness.getPreguntasPorEncuesta(this.nombre);
+                        this.lista = this.encuestaBusiness.getPreguntasPorEncuesta();
                         enviar.println(enviarLista(this.lista));
                         break;
 

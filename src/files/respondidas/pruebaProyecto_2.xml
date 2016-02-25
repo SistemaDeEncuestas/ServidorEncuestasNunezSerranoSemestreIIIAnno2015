@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pruebaProyecto><creador>nelA</creador><titulo>pruebaProyecto</titulo><descripcion>esto es una prueba</descripcion><nombreArchivo>pruebaProyecto</nombreArchivo><preguntas><pregunta tipo="unica" enunciado="color favorito"><respuesta>verde</respuesta></pregunta><pregunta tipo="multiple" enunciado="comida favorita"><respuesta>arroz</respuesta><respuesta>frijoles</respuesta><respuesta>carne</respuesta></pregunta><pregunta tipo="abierta" enunciado="pregunta abierta"><respuesta>algo</respuesta></pregunta></preguntas></pruebaProyecto>
